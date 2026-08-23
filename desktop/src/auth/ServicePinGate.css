@@ -1,0 +1,206 @@
+﻿/* ==========================================================================
+   Замок скрытых разделов. Токены — из theme.css, поэтому выбранные при
+   установке тема и акцент применяются и здесь без единого своего цвета.
+   ========================================================================== */
+
+@import './theme.css';
+
+.mpg,
+.mpg *,
+.mpg *::before,
+.mpg *::after {
+  box-sizing: border-box;
+}
+
+.mpg {
+  display: grid;
+  place-items: center;
+  /* Высота отведённой области, а не окна: замок стоит под общей шапкой
+     приложения, и 100vh добавляли бы к нему её высоту. */
+  min-height: 100%;
+  padding: var(--sp-6);
+  background: var(--bg-canvas);
+  color: var(--fg);
+}
+
+/* Внутри вкладки панели: своей высоты у замка нет, он занимает уже
+   отведённую область, а не выталкивает шапку и навигацию за экран. */
+.mpg--inline {
+  min-height: 0;
+  height: 100%;
+  padding: var(--sp-8) var(--sp-6);
+  background: transparent;
+}
+
+.mpg__card {
+  width: min(384px, 100%);
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-8);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.mpg__icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto var(--sp-5);
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.mpg__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.mpg__title {
+  margin: 0;
+  font-size: var(--fs-19);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.015em;
+  line-height: var(--lh-tight);
+}
+
+.mpg__caption {
+  margin: var(--sp-3) 0 var(--sp-7);
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  line-height: var(--lh-normal);
+}
+
+.mpg__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  text-align: left;
+}
+
+.mpg__label {
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+}
+
+/* Обычный пароль доступа на кассах, настроенных до появления PIN. */
+.mpg__secret {
+  width: 100%;
+  height: var(--ctl-h-lg);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-13);
+  outline: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.mpg__secret:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+/* PIN набирают на сенсорном экране: цифры крупные, по центру, разрежённые —
+   попасть мимо и не заметить опечатку сложнее. */
+.mpg__pin {
+  width: 100%;
+  height: var(--ctl-h-xl);
+  padding: 0 var(--sp-5);
+  text-align: center;
+  font-family: var(--font-mono);
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-16);
+  letter-spacing: 0.06em;
+  outline: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.mpg__pin:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+.mpg__error {
+  margin: var(--sp-4) 0 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border-w) solid var(--danger-border);
+  border-radius: var(--r-sm);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+  text-align: left;
+}
+
+.mpg__actions {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+/* Кнопки намеренно крупные и жирные — экран открывают пальцем на кассовом
+   мониторе, а не мышью. */
+.mpg__btn {
+  height: var(--ctl-h-xl);
+  padding: 0 var(--sp-7);
+  border: var(--border-w) solid transparent;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.mpg__btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.mpg__btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.mpg__btn--ghost {
+  border-color: var(--border);
+  background: var(--bg-surface);
+  color: var(--fg);
+}
+
+.mpg__btn--ghost:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.mpg__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mpg__btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.mpg__note {
+  margin: var(--sp-6) 0 0;
+  padding-top: var(--sp-5);
+  border-top: var(--border-w) solid var(--border-subtle);
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}

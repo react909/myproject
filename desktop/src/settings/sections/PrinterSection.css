@@ -1,0 +1,165 @@
+.printer-section__layout {
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 400px);
+
+  gap: 24px;
+
+  align-items: start;
+
+}
+
+
+
+.printer-section__form {
+
+  min-width: 0;
+
+  max-height: calc(100vh - 200px);
+
+  overflow-y: auto;
+
+  padding-right: 8px;
+
+}
+
+
+
+.printer-section__group {
+
+  margin: 0;
+
+  padding: 0;
+
+  border: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+
+}
+
+
+
+.printer-section__group-title {
+
+  padding: 0;
+
+  margin: 0 0 4px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  color: #343a40;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.04em;
+
+}
+
+
+
+.printer-section__select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.printer-preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.printer-preset-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 2px solid #dee2e6;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.printer-preset-card:hover:not(:disabled) {
+  border-color: var(--amber-500, var(--accent));
+}
+
+.printer-preset-card--on {
+  border-color: var(--amber-600, var(--accent-active));
+  background: #fff8eb;
+}
+
+.printer-preset-card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.printer-preset-card__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #212529;
+}
+
+.printer-preset-card__hint {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #6c757d;
+}
+
+.printer-preset-note {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--info-soft);
+  border: 1px solid var(--info-border);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--info-text);
+}
+
+.printer-preset-note--warn {
+  background: var(--warning-soft);
+  border-color: var(--warning-border);
+  color: var(--warning-text);
+}
+
+@media (max-width: 720px) {
+  .printer-preset-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+@media (max-width: 960px) {
+
+  .printer-section__layout {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+
+  .printer-section__form {
+
+    max-height: none;
+
+    overflow: visible;
+
+  }
+
+}
+
+

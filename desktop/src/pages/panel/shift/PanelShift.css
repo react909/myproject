@@ -1,0 +1,147 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Раздел «Смена».
+
+   Общие детали — таблицы, кнопки, полоса показателей — в deskCommon.css.
+   Здесь только своё: полоса состояния смены и раскладка двух таблиц.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.psh {
+  min-height: 0;
+}
+
+/*
+  Полоса состояния.
+
+  Одна строка, не карточка: состояние смены — это то, на что смотрят краем
+  глаза, и отводить под него блок в три строки с рамкой и тенью значит отнять
+  место у таблиц, ради которых сюда заходят.
+
+  Открытая смена отмечена левой полосой акцентом. Именно полосой, а не заливкой
+  всей строки: заливка спорила бы с полосой показателей под ней.
+*/
+.psh__state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-height: 38px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  font-size: 12.5px;
+  color: var(--fg-muted);
+}
+
+.psh__state--open { box-shadow: inset 2px 0 0 var(--accent); }
+
+.psh__state-item { white-space: nowrap; }
+.psh__state-item b { color: var(--fg); font-weight: 700; }
+
+/*
+  Метка состояния.
+
+  «Закрыта» нейтральная, а не красная: закрытая смена — обычное состояние
+  кассы утром, а не поломка. Красным здесь было бы враньё.
+*/
+.psh__badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--bg-inset);
+  color: var(--fg-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.psh__badge--open {
+  background: var(--success-soft);
+  color: var(--success-text);
+}
+
+/*
+  Расчётная сумма в ящике — главное число полосы.
+
+  Крупнее остальных и справа: это то, ради чего на полосу смотрят посреди
+  смены.
+*/
+.psh__drawer {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.psh__drawer-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.psh__drawer-value {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Заголовки половин ───────────────────────────────────────────────── */
+
+.psh__pane-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--fg-muted);
+}
+
+.psh__pane-note {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fg-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Колонки таблиц ──────────────────────────────────────────────────── */
+
+/* Время · Операция · Причина · Сумма */
+.psh__move-row {
+  grid-template-columns: 46px 92px minmax(0, 1fr) 96px;
+}
+
+/* № · Открыта · Кассир · Выручка · Наличные · Расхождение */
+.psh__history-row {
+  grid-template-columns: 38px 116px minmax(0, 1fr) 92px 92px 104px;
+}
+
+/*
+  Карточка смены под таблицей истории.
+
+  Не модальное окно: карточку читают, сверяясь с таблицей выше, и окно поверх
+  неё закрывало бы как раз то, с чем сверяются.
+*/
+.psh__card {
+  flex: 0 0 auto;
+  max-height: 40%;
+  overflow-y: auto;
+}
+
+/*
+  Узкое окно: половины встают друг под друга.
+
+  Двум таблицам рядом нужно около 1100 px; на моноблоке 1024 они превращаются
+  в две колонки по 500, где не помещается ни одна.
+*/
+@media (max-width: 1180px) {
+  .psh .dsk__split {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: minmax(180px, auto);
+  }
+}

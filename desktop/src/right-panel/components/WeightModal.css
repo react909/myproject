@@ -1,0 +1,73 @@
+.wmc-product-img {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #f4f4f6;
+}
+
+.wmc-display {
+  margin: 0 0 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #0c0f1a;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wmc-display__weight {
+  display: flex;
+  align-items: baseline;
+  line-height: 1;
+}
+
+.wmc-display__int {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  font-family: 'SF Mono', 'Consolas', monospace;
+}
+
+.wmc-display__dec {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--accent-active);
+  font-variant-numeric: tabular-nums;
+  font-family: 'SF Mono', 'Consolas', monospace;
+}
+
+.wmc-display__unit {
+  font-size: 20px;
+  font-weight: 600;
+  color: #57534e;
+  margin-left: 6px;
+  align-self: flex-end;
+  margin-bottom: 4px;
+}
+
+.wmc-display__pay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.wmc-display__pay-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.wmc-display__pay-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}

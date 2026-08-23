@@ -1,0 +1,39 @@
+.system-danger-zone {
+  margin-top: 32px;
+  padding: 20px 22px;
+  border: 1.5px solid #ffc9c9;
+  border-radius: 12px;
+  background: #fff5f5;
+}
+
+.system-danger-zone__title {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #c92a2a;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.system-danger-zone__desc {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #862e2e;
+}
+
+.system-danger-zone__btn {
+  padding: 12px 20px;
+  border: 1px solid #e03131;
+  border-radius: 9px;
+  background: #e03131;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.system-danger-zone__btn:hover {
+  background: #c92a2a;
+}

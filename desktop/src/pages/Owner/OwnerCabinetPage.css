@@ -1,0 +1,360 @@
+/* ==========================================================================
+   Кабинет владельца.
+
+   Плотная вёрстка магазинной кассы, а не яркого приложения: узкие отступы,
+   спокойные поверхности, фирменный цвет только там, где он что-то означает —
+   активный раздел и черта заголовка.
+   ========================================================================== */
+
+@import '../../auth/theme.css';
+
+.ocab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg-canvas);
+  color: var(--fg);
+}
+
+/* ── Шапка кабинета ─────────────────────────────────────────────────────── */
+
+.ocab__header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  padding: var(--sp-4) var(--sp-6);
+  border-bottom: var(--border-w) solid var(--border);
+  background: var(--bg-surface);
+}
+
+.ocab__header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.ocab__header-right {
+  margin-left: auto;
+}
+
+.ocab__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  height: var(--ctl-h);
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  transition:
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.ocab__back:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.ocab__divider {
+  width: 1px;
+  height: 26px;
+  background: var(--border);
+}
+
+.ocab__title {
+  margin: 0;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.015em;
+  line-height: var(--lh-tight);
+}
+
+/* Фирменная черта у заголовка — метка «это кабинет, а не панель смены». */
+.ocab__title::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 13px;
+  margin-right: var(--sp-3);
+  border-radius: var(--r-full);
+  background: var(--accent);
+  vertical-align: -1px;
+}
+
+.ocab__subtitle {
+  margin: 2px 0 0;
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+  line-height: var(--lh-tight);
+}
+
+.ocab__leave {
+  height: var(--ctl-h);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font: inherit;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.ocab__leave:hover {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ── Тело ───────────────────────────────────────────────────────────────── */
+
+.ocab__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.ocab__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  flex: 0 0 216px;
+  padding: var(--sp-5) var(--sp-4);
+  border-right: var(--border-w) solid var(--border);
+  background: var(--bg-surface);
+  overflow-y: auto;
+}
+
+.ocab__sidebar-label {
+  margin: 0 0 var(--sp-2) var(--sp-3);
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.ocab__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.ocab__nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  /* Крупная цель: по кабинету ходят пальцем на том же сенсорном мониторе. */
+  min-height: var(--ctl-h-lg);
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border-w) solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--fg-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* Только цвета: рамка и отступы не анимируются, иначе строка «дышала» бы и
+     сдвигала соседние при наведении. */
+  transition:
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.ocab__nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.ocab__nav-item--on {
+  border-color: var(--border-subtle);
+  background: var(--accent-soft);
+  color: var(--fg);
+}
+
+.ocab__nav-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--bg-inset);
+  color: var(--fg-muted);
+}
+
+.ocab__nav-item--on .ocab__nav-icon {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.ocab__nav-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ocab__nav-label {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+}
+
+.ocab__nav-sub {
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  line-height: var(--lh-tight);
+}
+
+/* Полоса активного раздела. На transform, а не на ширине: ширина заставила бы
+   браузер пересчитывать раскладку колонки на каждом кадре. */
+.ocab__nav-bar {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 22px;
+  border-radius: 0 var(--r-full) var(--r-full) 0;
+  background: var(--accent);
+  transform: translateY(-50%);
+}
+
+.ocab__note {
+  margin: auto 0 0;
+  padding: var(--sp-4);
+  border-radius: 10px;
+  background: var(--bg-subtle);
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+.ocab__main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.ocab__pane {
+  height: 100%;
+  min-height: 0;
+}
+
+/* Разделы вроде сотрудников рисуют собственную карточку — им нужен отступ,
+   которого нет у финансов и аналитики со своей полноэкранной сеткой. */
+.ocab__pane--plain {
+  padding: var(--sp-6);
+}
+
+.ocab__mobile-tabs {
+  display: none;
+}
+
+/* ── Скелетон ───────────────────────────────────────────────────────────── */
+
+.ocab-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-6);
+}
+
+.ocab-skeleton__tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--sp-4);
+}
+
+.ocab-skeleton__tile,
+.ocab-skeleton__chart,
+.ocab-skeleton__row {
+  border-radius: 12px;
+  background: var(--bg-inset);
+  /* Мерцание на opacity: раскладку не трогает, поэтому не отнимает кадры у
+     данных, которые в этот момент считаются. */
+  animation: ocab-pulse 1.4s var(--ease) infinite;
+}
+
+.ocab-skeleton__tile { height: 84px; }
+.ocab-skeleton__chart { height: 240px; }
+
+.ocab-skeleton__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.ocab-skeleton__row { height: 44px; }
+
+/* Волна: каждая следующая полоса отстаёт, поэтому список читается как
+   загружающийся, а не как мигающий целиком. */
+.ocab-skeleton__row:nth-child(2) { animation-delay: 90ms; }
+.ocab-skeleton__row:nth-child(3) { animation-delay: 180ms; }
+.ocab-skeleton__row:nth-child(4) { animation-delay: 270ms; }
+.ocab-skeleton__row:nth-child(5) { animation-delay: 360ms; }
+
+@keyframes ocab-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocab-skeleton__tile,
+  .ocab-skeleton__chart,
+  .ocab-skeleton__row {
+    animation: none;
+  }
+}
+
+/* ── Узкий экран ────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .ocab__sidebar {
+    display: none;
+  }
+
+  .ocab__mobile-tabs {
+    display: flex;
+    gap: var(--sp-2);
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .ocab__mobile-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    height: var(--ctl-h-lg);
+    padding: 0 var(--sp-4);
+    border: var(--border-w) solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-surface);
+    color: var(--fg-muted);
+    font: inherit;
+    font-size: var(--fs-12);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .ocab__mobile-tab--on {
+    border-color: transparent;
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+}

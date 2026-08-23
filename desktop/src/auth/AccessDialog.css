@@ -1,0 +1,751 @@
+/* ==========================================================================
+   Окна ввода секрета: владельца и специалиста.
+
+   Оформление в духе iOS: затемнение с размытием, скруглённая карточка, мягкая
+   тень, спокойное появление. Всё движение — на transform и opacity: они не
+   вызывают пересчёт раскладки, и окно всплывает без рывка даже на слабом
+   моноблоке, где внутри него ещё и клавиатура на полсотни клавиш.
+   ========================================================================== */
+
+@import './theme.css';
+
+.acc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 15000;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-5);
+  background: rgba(8, 10, 14, 0.55);
+  /* Размытие подложки — то, что отличает окно iOS от прямоугольника поверх
+     экрана: касса за ним читается силуэтами, и видно, что она никуда не делась. */
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  animation: acc-veil var(--dur, 160ms) var(--ease) both;
+}
+
+@keyframes acc-veil {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.acc-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  width: min(620px, 100%);
+  max-height: 94vh;
+  overflow-y: auto;
+  padding: var(--sp-6);
+  border: var(--border-w) solid var(--border-subtle);
+  /* Скругление крупнее обычного для карточек: на этом окне оно единственное
+     украшение, и оно же делает его «окном», а не областью экрана. */
+  border-radius: 22px;
+  background: var(--bg-surface);
+  color: var(--fg);
+  box-shadow:
+    0 32px 64px rgba(8, 10, 14, 0.32),
+    0 2px 8px rgba(8, 10, 14, 0.12);
+  /* Короче прежнего и с лёгким перелётом — темп iOS: окно не «выезжает», а
+     появляется. Двести двадцать миллисекунд успевали прочитаться как задержка
+     перед вводом. */
+  animation: acc-rise 190ms var(--ease-pop) both;
+}
+
+/* Всплывает снизу и чуть приближается — движение iOS. Ни высота, ни отступы
+   при этом не анимируются: только transform и opacity. */
+@keyframes acc-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/*
+  С клавиатурой окно шире, и это не вкусовое.
+
+  Ширину диктует самый широкий ряд: в русской раскладке это одиннадцать букв, а
+  в нижнем ряду — двенадцать позиций вместе с ⇧ и ⌫. Клавиша меньше 44 px не
+  годится (по ней попадают пальцем), значит ряду нужно 12 × 44 плюс одиннадцать
+  зазоров по 6 — около 594 px только на клавиши. В прежние 560 px окна за
+  вычетом внутренних отступов оставалось ~508 px, и ряд уезжал за край: ⇧ и ⌫
+  обрезались, а под окном появлялась полоса прокрутки.
+
+  Уменьшать клавиши вместо окна нельзя — 44 px это нижняя граница попадания
+  пальцем, а не предпочтение.
+*/
+.acc-panel--touch {
+  width: min(820px, 100%);
+}
+
+/* Уважение к системной настройке «меньше движения»: окно просто появляется. */
+@media (prefers-reduced-motion: reduce) {
+  .acc-overlay,
+  .acc-panel {
+    animation-duration: 1ms;
+  }
+}
+
+.acc-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.acc-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+}
+
+/* Тонкая цветная черта над заголовком — единственное место фирменного цвета в
+   окне. Своя у каждой двери: разные окна должны различаться с одного взгляда,
+   а не по прочтении заголовка. */
+.acc-panel::before {
+  content: '';
+  height: 3px;
+  width: 44px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+
+.acc-panel--owner::before {
+  background: var(--accent);
+}
+
+/* У специалиста черта приглушена: он приходит к технике, а не к деньгам, и
+   окно не должно выглядеть как вход в кабинет владельца. */
+.acc-panel--specialist::before {
+  background: var(--fg-subtle);
+}
+
+.acc-caption {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: var(--fs-13);
+  line-height: var(--lh-normal);
+}
+
+.acc-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.acc-label {
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/*
+  Поле ввода секрета — без коробки.
+
+  Ни рамки, ни подложки, ни кольца подсветки вокруг. Раньше всё это было, и
+  вместе получалась обведённая цветом коробка с четырёхпиксельным ореолом —
+  наряднее, чем требуется от места, куда вводят пароль. Секрет и так
+  единственное, что есть на этом экране; обводить его, чтобы человек его нашёл,
+  не нужно.
+
+  Осталась одна волосяная линия снизу. Она не украшение: без неё непонятно, где
+  кончается пустое поле и начинается остальное окно, — а на первом символе,
+  когда точка всего одна, это важнее всего.
+
+  Настоящее поле лежит внутри прозрачным и невидимым, видно ячейки, которые
+  рисует SecretDisplay. Разбор, зачем так, — в SecretDisplay.tsx.
+*/
+.acc-entry {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 46px 0 2px;
+  border-bottom: 2px solid var(--border);
+  /* Цвет — да, размеры — нет: подсветка не должна трогать поток. */
+  transition: border-color var(--dur) var(--ease);
+}
+
+.acc-entry.is-focused {
+  border-bottom-color: var(--accent);
+}
+
+/* Отказ показывают сами кружки (см. .acc-cells.is-invalid) — поле только
+   меняет цвет черты. Трясти оба уровня разом значило бы получить двойное
+   движение с разной амплитудой. */
+.acc-entry.is-invalid {
+  border-bottom-color: var(--danger);
+}
+
+/*
+  Настоящее поле: невидимое, но полноценное.
+
+  Занимает всю площадь блока, поэтому касание и клик попадают именно в него и
+  фокус ставится сам. Текст и каретка прозрачные — их роль играют ячейки; без
+  `caret-color` рядом с нарисованной кареткой мигала бы вторая, системная.
+*/
+.acc-entry__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0 46px 0 2px;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  font-size: 20px;
+  font-family: inherit;
+  outline: none;
+}
+
+/* Выделение тоже прозрачное: подсвеченный прямоугольник поверх ячеек выдал бы
+   длину и положение символов ярче, чем сами ячейки. */
+.acc-entry__input::selection {
+  background: transparent;
+}
+
+/* ── Ячейки набранного ──────────────────────────────────────────────────── */
+
+.acc-cells {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  /* Ячейки только показывают: все нажатия достаются полю под ними. */
+  pointer-events: none;
+}
+
+.acc-cells__placeholder {
+  color: var(--fg-subtle);
+  font-size: 19px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+/*
+  Появление ячейки.
+
+  Движение с перелётом: символ выскакивает чуть крупнее нужного и садится на
+  место. Так нажатие подтверждается заметно даже боковым зрением — а смотрит
+  человек в этот момент на клавиши, а не в поле.
+
+  Стоит это по-прежнему ничего: анимируются только transform и opacity, то есть
+  композитор, без пересчёта раскладки и перерисовки соседей. Сто шестьдесят
+  миллисекунд — на глаз мгновенно, но глаз успевает заметить, что что-то
+  произошло; длиннее делать нельзя, иначе на быстром наборе ячейки отстают от
+  пальца и набегают друг на друга.
+*/
+.acc-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+/*
+  Кружок скрытого секрета: сначала контур, потом заливка изнутри.
+
+  Настоящий круг, а не глиф «•»: у шрифтов он разного размера и сидит выше
+  базовой линии, из-за чего ряд точек «плавал» по высоте.
+
+  Цвет — обычный цвет текста: чёрный на светлой теме, белый на тёмной. Пароль
+  не должен выглядеть нарядно; фирменный цвет в окне остался там, где он
+  что-то значит, — на каретке и на клавише ⏎.
+
+  Подсветки вокруг больше нет: она читалась как пятно краски на пустом месте.
+*/
+.acc-cell__dot {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--fg);
+  border-radius: var(--r-full);
+  /* Контур появляется первым — быстро и без перелёта: это ещё не «символ
+     принят», это «место под него». */
+  animation: acc-dot-in 120ms var(--ease) both;
+}
+
+@keyframes acc-dot-in {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/*
+  Заливка внутри контура — второе движение, и уже с перелётом.
+
+  Задержка в 70 мс не случайна: без неё оба движения сливаются в одно, и
+  «пустой кружок, который заполнился» превращается обратно в «появилась точка».
+  Анимируется только transform, поэтому кадры считает композитор.
+*/
+.acc-cell__fill {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-full);
+  background: var(--fg);
+  transform: scale(0);
+  animation: acc-dot-fill 190ms 70ms var(--ease-pop) both;
+}
+
+@keyframes acc-dot-fill {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+/*
+  Уход ячейки. Стёртый символ не пропадает мгновенно: кружок сжимается и гаснет.
+
+  Без этого удаление читается как сбой отрисовки — было пять кружков, стало
+  четыре, и на глаз не понять, стёрлось одно или сразу два. Длительность
+  совпадает с EXIT_MS в SecretDisplay.tsx: там ячейка столько же держится в
+  разметке, чтобы движению было на чём проиграться.
+
+  Ячейка при этом уже не занимает места в ряду — иначе соседние сдвигались бы
+  дважды: сначала при удалении, потом когда уходящая наконец пропадёт.
+*/
+.acc-cell--leaving {
+  animation: acc-cell-out 160ms var(--ease) both;
+  pointer-events: none;
+}
+
+@keyframes acc-cell-out {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acc-cell--leaving {
+    display: none;
+  }
+}
+
+/*
+  Показанный секрет — тем же цветом, что и точки.
+
+  Не фирменным: пароль показывают затем, чтобы его прочесть и сверить, а
+  цветной текст читается хуже обычного.
+*/
+.acc-cell__char {
+  color: var(--fg);
+  font-size: 20px;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  animation: acc-dot-in 120ms var(--ease) both;
+}
+
+/* Дефис в маске ключа — разделитель, а не символ: бледнее и на группы не
+   претендует. Кольцо ему тоже ни к чему: его не нажимали, он проставился сам. */
+.acc-cell--sep .acc-cell__char {
+  color: var(--fg-subtle);
+  font-weight: var(--fw-regular);
+}
+
+.acc-cell--sep::after {
+  content: none;
+}
+
+/*
+  Своя каретка вместо системной.
+
+  Мигание на opacity, поэтому кадры не задевают раскладку. Шаг в секунду — как
+  у системной: чужой ритм в поле ввода читается как неисправность.
+*/
+.acc-cells__caret {
+  width: 3px;
+  height: 26px;
+  margin-left: 1px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-ring);
+  animation: acc-caret 1s steps(1, end) infinite;
+}
+
+@keyframes acc-caret {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/*
+  Ключ длиннее пароля: двадцать один символ вместе с дефисами.
+
+  Ячейки теснее и моноширинные — так весь ключ помещается в поле целиком и
+  сверяется с наклейкой символ за символом, без прокрутки.
+*/
+.acc-entry--key .acc-cells {
+  gap: 4px;
+}
+
+.acc-entry--key .acc-cell__char {
+  font-family: var(--font-mono);
+  font-size: 18px;
+}
+
+/*
+  Волна во время проверки.
+
+  Проверка секрета занимает около полутора десятых секунды, и без движения это
+  читается как «нажатие потерялось». Волна отвечает на «оно вообще что-то
+  делает?» тем же местом, куда человек смотрит, — самим набранным паролем.
+
+  Каждая ячейка приподнимается чуть позже соседней (задержка приходит из
+  --wave-delay), поэтому по ряду бежит волна, а не мигает всё разом. Движение
+  на transform: раскладку не задевает, кадры считает композитор — то есть волна
+  ничего не стоит даже на слабой машине.
+*/
+/* Волна — только по живым ячейкам. Уходящая проигрывает свой уход и исчезает;
+   бесконечная волна поверх неё однажды уже накопилась и подвесила окно. */
+.acc-cells.is-checking .acc-cell:not(.acc-cell--leaving) {
+  animation: acc-wave 400ms var(--wave-delay, 0ms) ease-in-out infinite;
+}
+
+@keyframes acc-wave {
+  0%, 60%, 100% { transform: translate3d(0, 0, 0); }
+  30% { transform: translate3d(0, -9px, 0); }
+}
+
+/* Каретка на время проверки уходит: набирать всё равно уже нечего, а рядом с
+   бегущей волной она читается как ещё одно мигание. */
+.acc-cells.is-checking .acc-cells__caret {
+  opacity: 0;
+}
+
+/*
+  «Нет» — когда секрет не подошёл.
+
+  Кружки коротко мотает из стороны в сторону, всем рядом сразу. Это ответ туда
+  же, куда направлен взгляд: человек смотрит на набранное, а не читает подпись
+  под полем. Движение заканчивается там же, где началось, и вёрстку не двигает.
+
+  Ряд целиком, а не каждая ячейка со своей задержкой: волна «идёт проверка» и
+  мотание «не подошло» должны читаться как разные жесты, иначе одно принимают
+  за другое.
+*/
+.acc-cells.is-invalid {
+  animation: acc-cells-nope 320ms var(--ease) both;
+}
+
+@keyframes acc-cells-nope {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  15% { transform: translate3d(-8px, 0, 0); }
+  35% { transform: translate3d(7px, 0, 0); }
+  55% { transform: translate3d(-4px, 0, 0); }
+  75% { transform: translate3d(2px, 0, 0); }
+}
+
+/* Кружки при отказе краснеют вместе с чертой поля: цвет держится, пока человек
+   не начнёт править набранное. */
+.acc-cells.is-invalid .acc-cell__dot {
+  border-color: var(--danger);
+}
+
+.acc-cells.is-invalid .acc-cell__fill {
+  background: var(--danger);
+}
+
+/* Только цвет букв: заливка сделала бы из показанного пароля красные плашки. */
+.acc-cells.is-invalid .acc-cell__char {
+  color: var(--danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acc-cell__dot,
+  .acc-cell__char,
+  .acc-cell__fill {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+
+  .acc-cells.is-checking .acc-cell,
+  .acc-cells__caret {
+    animation: none;
+  }
+}
+
+/*
+  Индикатор проверки. Поверх поля, а не в потоке: в потоке он сдвигал бы всё,
+  что ниже, на каждой попытке — а ниже клавиатура, над которой уже занесён
+  палец.
+
+  Вращение на transform, поэтому кадры не задевают раскладку.
+*/
+.acc-spinner {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border: 2px solid var(--accent-ring);
+  border-top-color: var(--accent);
+  border-radius: var(--r-full);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+.acc-spinner.is-on {
+  opacity: 1;
+  animation: acc-spin 700ms linear infinite;
+}
+
+@keyframes acc-spin {
+  to { transform: rotate(360deg); }
+}
+
+/*
+  Место под сообщение занято всегда — и подсказкой, и ошибкой.
+
+  Высота фиксирована по минимуму: появление ошибки не сдвигает ни поле, ни
+  клавиатуру. Пока блок рос по содержимому, промах по клавише после каждой
+  ошибки был не случайностью, а следствием вёрстки.
+*/
+.acc-status {
+  min-height: 62px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.acc-difference,
+.acc-error {
+  margin: 0;
+  width: 100%;
+  padding: var(--sp-4);
+  border: var(--border-w) solid transparent;
+  border-radius: 12px;
+  font-size: var(--fs-12);
+  line-height: var(--lh-normal);
+  /* Смена подсказки на ошибку — проявлением, без скачка. */
+  animation: acc-fade var(--dur) var(--ease) both;
+}
+
+@keyframes acc-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.acc-difference {
+  border-color: var(--border-subtle);
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+}
+
+/*
+  Бегущая полоса по подписи, пока идёт проверка.
+
+  То же «идёт работа», что и волна по кружкам, но текстом: светлое пятно
+  проходит слева направо, как при загрузке. Движение — на background-position
+  одного градиента, без теней и фильтров: перерисовывается только этот
+  прямоугольник, соседи не задеты.
+*/
+.acc-difference.is-checking {
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    var(--accent-soft) 50%,
+    transparent 70%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: acc-shimmer 1.1s linear infinite;
+}
+
+@keyframes acc-shimmer {
+  from { background-position: 140% 0; }
+  to { background-position: -40% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acc-difference.is-checking {
+    animation: none;
+    background-image: none;
+  }
+}
+
+.acc-error {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: var(--fw-medium);
+}
+
+/*
+  Снятие блокировки паролем входа.
+
+  Появляется только когда дверь закрылась по числу попыток. Оформлено
+  подчёркнуто скромно — это запасной путь, а не второй способ войти: подпись
+  прямо говорит, что кабинет этот пароль не откроет.
+*/
+.acc-lift {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-subtle);
+  animation: acc-fade var(--dur) var(--ease) both;
+}
+
+.acc-lift__note {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+.acc-lift__row {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.acc-lift__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--ctl-h-lg);
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: var(--fs-16);
+  outline: none;
+}
+
+.acc-lift__input:focus {
+  border-color: var(--accent);
+}
+
+.acc-lift__btn {
+  flex: 0 0 auto;
+  height: var(--ctl-h-lg);
+  padding: 0 var(--sp-6);
+  border: var(--border-w) solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--fg);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+
+.acc-lift__btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Подвал для установок с обычной клавиатурой: там нет экранной панели, а с ней
+   и кнопки «Отмена», которая на ней живёт. */
+.acc-foot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.acc-close {
+  height: var(--ctl-h-lg);
+  padding: 0 var(--sp-6);
+  border: var(--border-w) solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.acc-close:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+/*
+  Подсказка при удержании логотипа.
+
+  Сам намёк рисуется на знаке (см. HeaderBrand) — там, куда человек в этот
+  момент смотрит и держит палец. Здесь остаётся только подпись: без неё пять
+  секунд удержания выглядят как «ничего не происходит».
+*/
+/*
+  Полоса удержания логотипа — без подписи.
+
+  Раньше здесь была плашка со словами «Удерживайте логотип — откроются скрытые
+  настройки». Она объясняла секретный жест вслух любому, кто смотрит на экран, и
+  этого одного раза достаточно, чтобы жест перестал быть секретом.
+
+  Осталась узкая полоса без текста: тому, кто держит осознанно, она говорит
+  «идёт, не отпускай», а случайно задевшему логотип — ничего.
+*/
+.acc-longpress {
+  position: fixed;
+  left: 50%;
+  bottom: 10vh;
+  z-index: 15001;
+  /* Крупная и заметная: её видит только тот, кто держит логотип осознанно, и
+     видеть он должен без прищуривания — палец на знаке, глаза на полосе.
+     Прежние 132×4 терялись на кассовом мониторе. */
+  width: min(360px, 60vw);
+  height: 12px;
+  /*
+    Центрируется трансформацией, а не отрицательным отступом.
+
+    Отступ считался как `min(-180px, -30vw)` — и это была ошибка: `min()` из двух
+    отрицательных берёт наиболее отрицательное, то есть на широком экране
+    сдвигал полосу на -30vw при её собственной ширине в 360 px. Полоса уезжала
+    влево тем сильнее, чем шире монитор.
+
+    `translateX(-50%)` не зависит от ширины вовсе. Смешать его с кадрами
+    анимации нельзя — но `acc-hint` меняет только прозрачность, и конфликта нет.
+  */
+  transform: translateX(-50%);
+  padding: 3px;
+  border-radius: var(--r-full);
+  background: rgba(8, 10, 14, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(8, 10, 14, 0.35);
+  overflow: hidden;
+  pointer-events: none;
+  animation: acc-hint 160ms var(--ease) both;
+}
+
+/* Заполнение идёт масштабом, а не шириной: ширина заставляла бы пересчитывать
+   раскладку каждый кадр отсчёта. */
+.acc-longpress__fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-ring);
+  transform-origin: left center;
+  /* Плавность между кадрами отсчёта: сам прогресс приходит рывками по кадрам. */
+  transition: transform 90ms linear;
+}
+
+@keyframes acc-hint {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

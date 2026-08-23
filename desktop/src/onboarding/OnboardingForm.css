@@ -1,0 +1,260 @@
+/* ==========================================================================
+   Поля реквизитов. Один файл на мастер установки и на настройки — разметка
+   полей больше нигде не повторяется.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+.ob-grid,
+.ob-grid *,
+.ob-grid *::before,
+.ob-grid *::after {
+  box-sizing: border-box;
+}
+
+.ob-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.ob-field {
+  grid-column: span var(--span, 6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.ob-label {
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.01em;
+}
+
+.ob-label b {
+  color: var(--danger);
+  font-weight: var(--fw-semibold);
+}
+
+.ob-control {
+  width: 100%;
+  height: var(--ctl-h);
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-13);
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+select.ob-control {
+  padding-right: var(--sp-7);
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 14px center, right 9px center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.ob-control:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.ob-control:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+.ob-control::placeholder {
+  color: var(--fg-subtle);
+}
+
+.ob-control.is-invalid {
+  border-color: var(--danger);
+}
+
+.ob-control.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+/* Значение из прошивки: видно, но правке не подлежит — оформлено как текст,
+   а не как поле, чтобы по нему не пытались кликать. */
+.ob-control--readonly {
+  display: flex;
+  align-items: center;
+  border-style: dashed;
+  background: var(--bg-inset);
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+}
+
+.ob-hint {
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+.ob-hint.is-invalid {
+  color: var(--danger);
+  font-weight: var(--fw-medium);
+}
+
+.ob-hint.is-valid {
+  color: var(--success);
+  font-weight: var(--fw-medium);
+}
+
+/* Значение пришло из прошивки кассы — правка возможна только через отвязку. */
+.ob-hint.is-locked {
+  color: var(--success);
+}
+
+.ob-control[readonly] {
+  background: var(--bg-inset);
+  color: var(--fg-muted);
+  cursor: default;
+}
+
+/* --- Переключатель да/нет ------------------------------------------------ */
+
+.ob-toggle {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.ob-toggle:hover {
+  border-color: var(--border-strong);
+}
+
+.ob-toggle.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ob-toggle input {
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  flex: 0 0 auto;
+  accent-color: var(--accent);
+}
+
+.ob-toggle__text strong {
+  display: block;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+}
+
+.ob-toggle__text small {
+  display: block;
+  margin-top: 1px;
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+/* --- Свёрнутая секция ---------------------------------------------------- */
+
+.ob-section:not(:first-child) {
+  margin-top: var(--sp-6);
+}
+
+.ob-section--foldable {
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.ob-fold {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  width: 100%;
+  padding: var(--sp-4);
+  background: var(--bg-subtle);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ob-fold:hover {
+  background: var(--bg-hover);
+}
+
+.ob-fold__text strong {
+  display: block;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--fg-muted);
+}
+
+.ob-fold__text small {
+  display: block;
+  margin-top: var(--sp-1);
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+}
+
+.ob-fold__mark {
+  flex: 0 0 auto;
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+}
+
+.ob-section--foldable.is-open .ob-fold {
+  border-bottom: var(--border-w) solid var(--border);
+}
+
+.ob-fold__body {
+  padding: var(--sp-4);
+}
+
+.ob-section-head {
+  margin: 0 0 var(--sp-4);
+  padding-bottom: var(--sp-2);
+  border-bottom: var(--border-w) solid var(--border-subtle);
+}
+
+.ob-section-head:not(:first-child) {
+  margin-top: var(--sp-6);
+}
+
+.ob-section-head h2 {
+  margin: 0;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--fg-muted);
+}
+
+.ob-section-head p {
+  margin: var(--sp-1) 0 0;
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+}
+
+@media (max-width: 720px) {
+  .ob-field {
+    grid-column: span 12;
+  }
+}

@@ -1,0 +1,145 @@
+/* ==========================================================================
+   Журнал входов в кабинет: кто и когда открывал финансы.
+   ========================================================================== */
+
+@import '../../auth/theme.css';
+
+.oentry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-6);
+}
+
+.oentry__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+}
+
+.oentry__title {
+  margin: 0;
+  font-size: var(--fs-19);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.015em;
+}
+
+.oentry__caption {
+  margin: var(--sp-2) 0 0;
+  max-width: 62ch;
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  line-height: var(--lh-normal);
+}
+
+.oentry__refresh {
+  flex: 0 0 auto;
+  height: var(--ctl-h);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font: inherit;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.oentry__refresh:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.oentry__error {
+  margin: 0;
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--danger-border);
+  border-radius: 12px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: var(--fs-12);
+}
+
+/* ── Пусто ──────────────────────────────────────────────────────────────── */
+
+/* Пустое состояние объясняет причину, а не сообщает об отсутствии: снимков
+   может не быть просто потому, что камеры на этой кассе нет. */
+.oentry__empty {
+  padding: var(--sp-9) var(--sp-6);
+  border: 1px dashed var(--border-strong);
+  border-radius: 14px;
+  background: var(--bg-subtle);
+  text-align: center;
+}
+
+.oentry__empty-title {
+  margin: 0;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
+}
+
+.oentry__empty-note {
+  margin: var(--sp-3) auto 0;
+  max-width: 46ch;
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  line-height: var(--lh-normal);
+}
+
+/* ── Сетка снимков ──────────────────────────────────────────────────────── */
+
+.oentry__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oentry__item {
+  display: flex;
+  flex-direction: column;
+  border: var(--border-w) solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+/* Соотношение задаётся заранее: без него сетка прыгает по мере подгрузки
+   картинок, а их тут два десятка. */
+.oentry__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--bg-inset);
+}
+
+.oentry__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.oentry__when {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.oentry__who {
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  /* Логин бывает длинным email — переносить его нечем, обрезаем. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

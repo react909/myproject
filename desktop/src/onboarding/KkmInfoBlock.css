@@ -1,0 +1,78 @@
+/* ==========================================================================
+   Информация о кассе: чтение с устройства и версии прошивки.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+.kkm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-subtle);
+}
+
+.kkm__actions {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.kkm__btn {
+  height: var(--ctl-h);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.kkm__btn:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.kkm__btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.kkm__btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.kkm__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Значения прошивки — справка, а не поле: серым, моноширинным, без рамки. */
+.kkm__firmware {
+  display: flex;
+  gap: var(--sp-6);
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.kkm__firmware dt {
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+}
+
+.kkm__firmware dd {
+  margin: var(--sp-1) 0 0;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+}

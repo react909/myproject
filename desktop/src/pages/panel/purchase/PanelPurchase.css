@@ -1,0 +1,269 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Раздел «Закупка».
+
+   Общие детали — в deskCommon.css. Здесь колонки таблиц, шапка документа и
+   таблица ввода, которая работает как электронная таблица.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.ppu {
+  min-height: 0;
+}
+
+/* Тонкий разделитель внутри панели инструментов: отделяет действия от фильтров,
+   не заводя вторую строку. */
+.ppu__divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 2px;
+  background: var(--border);
+}
+
+/*
+  № · Дата · Поставщик · Позиций · Сумма · Состояние · Оплата
+
+  Колонка поставщика тянется, но не бесконечно: на широком экране `1fr`
+  растягивал её на пол-таблицы, и между названием и числами получалось поле
+  пустоты в четыреста точек — глаз терял строку по дороге.
+*/
+.ppu__list-row {
+  /* Последняя колонка забирает остаток: колонки при этом стоят слева плотно,
+     а не разъезжаются на всю ширину экрана. */
+  grid-template-columns: 74px 92px minmax(160px, 420px) 74px 110px 108px minmax(96px, 1fr);
+}
+
+/* Пометка «возврат» у номера: возврат и приход лежат в одном списке, и
+   различать их только по цвету строки нельзя. */
+.ppu__kind {
+  display: block;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--warning-text);
+  line-height: 1;
+}
+
+/* ── Документ ────────────────────────────────────────────────────────── */
+
+.ppu__doc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+
+/*
+  Шапка документа.
+
+  Ряд полей, а не форма в столбик: на моноблоке высота — дефицит, а полей
+  шесть, и столбиком они съели бы треть экрана у таблицы, ради которой сюда и
+  заходят.
+*/
+.ppu__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+}
+
+.ppu__header .dsk__label { flex: 0 1 180px; }
+.ppu__header-wide { flex: 1 1 240px !important; }
+
+/* ── Таблица ввода ───────────────────────────────────────────────────── */
+
+.ppu__grid-wrap {
+  flex: 1;
+  min-height: 0;
+}
+
+/*
+  Товар · Штрихкод · Кол-во · Ед. · Закуп. · Сумма · Розн. · Наценка · Прибыль
+
+  Колонка товара тянется, остальные фиксированы: цена в 8 знаков не должна
+  переезжать при длинном названии соседа.
+*/
+.ppu__grid-row {
+  /* Название ограничено сверху: на широком экране `1fr` растягивал его на
+     пол-таблицы, и между товаром и его штрихкодом получалось поле пустоты. */
+  grid-template-columns:
+    minmax(160px, 360px) 130px 76px 44px 104px 104px 104px 82px minmax(100px, 1fr);
+  /* Строка выше обычной: под закупочной ценой помещается подсказка прошлой. */
+  height: 34px;
+}
+
+/*
+  Ячейка ввода.
+
+  Поле занимает ячейку целиком и выглядит как её содержимое, а не как поле в
+  рамке: сорок рамок в таблице читаются как решётка. Рамка появляется только у
+  той ячейки, где стоит курсор.
+*/
+.ppu__cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.ppu__input {
+  width: 100%;
+  height: 24px;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 12.5px;
+  min-width: 0;
+}
+
+.ppu__input:hover:not(:disabled) { border-color: var(--border); }
+
+/*
+  Ячейка под курсором — рамка акцентом в два пикселя.
+
+  Это тот самый «фокус всегда виден»: в таблице на сорок строк и девять
+  колонок потерять курсор проще всего, и слабая подсветка здесь не годится.
+*/
+.ppu__input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+  background: var(--bg-surface);
+}
+
+.ppu__input:disabled {
+  color: var(--fg-muted);
+  cursor: default;
+}
+
+/* Вычисляемые ячейки: их не редактируют, и курсор в них не заходит. */
+.ppu__readonly {
+  padding: 0 5px;
+  font-size: 12.5px;
+  color: var(--fg-muted);
+}
+
+/*
+  Подсказка прошлой закупочной цены.
+
+  Единственное место в строке, где появляется цвет: он значит «подорожало» или
+  «подешевело», а не оформление. Мелким, под ценой — она нужна взглядом, а не
+  для чтения.
+*/
+.ppu__drift {
+  font-size: 9.5px;
+  font-style: normal;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 0 5px;
+}
+
+.ppu__drift--up { color: var(--danger-text); }
+.ppu__drift--down { color: var(--success-text); }
+
+/* ── Подсказки товара ────────────────────────────────────────────────── */
+
+/*
+  Список под ячейкой. Абсолютом, поверх соседних строк: раздвигать таблицу
+  значило бы дёргать всё, что ниже, на каждое нажатие клавиши.
+*/
+.ppu__suggest {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  width: max(280px, 100%);
+  max-height: 216px;
+  margin: 2px 0 0;
+  padding: 2px;
+  list-style: none;
+  overflow-y: auto;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  box-shadow: 0 8px 20px rgba(8, 12, 20, 0.18);
+}
+
+.ppu__suggest-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 3px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ppu__suggest-item:hover { background: var(--bg-hover); }
+.ppu__suggest-item--on { background: var(--accent-soft); }
+
+.ppu__suggest-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.ppu__suggest-meta {
+  font-size: 10.5px;
+  color: var(--fg-subtle);
+}
+
+/* ── Итоги документа ─────────────────────────────────────────────────── */
+
+.ppu__totals {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 6px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-inset);
+  font-size: 12px;
+  color: var(--fg-subtle);
+}
+
+.ppu__totals b {
+  margin-left: 4px;
+  color: var(--fg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ppu__actions { flex: 0 0 auto; }
+
+/* ── Ценники ─────────────────────────────────────────────────────────── */
+
+.ppu__labels {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.ppu__label-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 92px;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px;
+  border-radius: 3px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.ppu__label-row:hover { background: var(--bg-hover); }

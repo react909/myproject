@@ -1,0 +1,129 @@
+/* Раздел «Реквизиты». Поля приходят из общего движка (OnboardingForm.css),
+   здесь — только раскладка и кнопка сохранения. */
+
+.rq__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+  gap: 20px;
+  align-items: start;
+}
+
+.rq__form {
+  min-width: 0;
+}
+
+.rq__preview {
+  position: sticky;
+  top: 12px;
+  min-width: 0;
+}
+
+.rq__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border, #e3e6ea);
+}
+
+/* Тёмный текст на янтарной заливке — раньше подобные кнопки в настройках
+   оставались белым по белому и читались только по наведению. */
+.rq__save {
+  height: 44px;
+  padding: 0 24px;
+  border: 1px solid var(--amber-600, var(--accent-active));
+  border-radius: 8px;
+  background: var(--amber-500, var(--accent));
+  color: var(--accent-fg);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.rq__save:hover:not(:disabled) {
+  background: var(--amber-600, var(--accent-active));
+}
+
+.rq__save:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.rq__error,
+.rq__warn {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rq__error {
+  color: #dc2626;
+}
+
+.rq__warn {
+  color: var(--accent-text);
+}
+
+.rq .ob-section-head:first-child {
+  margin-top: 0;
+}
+
+.rq-mode {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* Последствия переключения режима видны сразу, а не после сохранения. */
+.rq-mode__note {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+.rq-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.rq-method {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rq-method.is-checked {
+  border-color: var(--amber-500, var(--accent));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.rq-method input {
+  accent-color: var(--amber-500, var(--accent));
+}
+
+@media (max-width: 1100px) {
+  .rq__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rq__preview {
+    position: static;
+  }
+}

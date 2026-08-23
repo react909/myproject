@@ -1,0 +1,98 @@
+.adhoc-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.adhoc-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(15, 23, 42, 0.45);
+  cursor: pointer;
+}
+
+.adhoc-modal__card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 22px 18px;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+}
+
+.adhoc-modal__title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.adhoc-modal__hint {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #667085;
+}
+
+.adhoc-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.adhoc-modal__field span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475467;
+}
+
+.adhoc-modal__field input {
+  height: 44px;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 16px;
+}
+
+.adhoc-modal__field input:focus {
+  outline: 2px solid var(--accent);
+  border-color: var(--accent);
+}
+
+.adhoc-modal__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.adhoc-modal__btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 10px;
+  border: 0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adhoc-modal__btn--ghost {
+  background: #f2f4f7;
+  color: #344054;
+}
+
+.adhoc-modal__btn--primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.adhoc-modal__btn--primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

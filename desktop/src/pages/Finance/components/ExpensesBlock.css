@@ -1,0 +1,369 @@
+/* ==========================================================================
+   Расходы магазина. Плотная сетка полей, но крупные кнопки: касса сенсорная,
+   по кнопкам попадают пальцем, а данных на экране должно помещаться много.
+   ========================================================================== */
+
+.exp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 10px;
+  background: var(--bg-surface, #ffffff);
+  min-width: 0;
+}
+
+.exp__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.exp__head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.exp__cats-toggle {
+  flex: 0 0 auto;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 8px;
+  background: var(--bg-surface, #ffffff);
+  color: var(--fg-muted, #6b7280);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.exp__cats-toggle:hover {
+  border-color: var(--border-strong, #cfd4da);
+  color: var(--fg, #10151d);
+}
+
+/* --- Редактор справочника ------------------------------------------------- */
+
+.exp__cats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 8px;
+  background: var(--bg-subtle, #f7f8fa);
+}
+
+.exp__cats-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exp__cats-list li {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+}
+
+.exp__cats-list input,
+.exp__cats-add input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 6px;
+  background: var(--bg-canvas, #ffffff);
+  color: var(--fg, #10151d);
+  font-family: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+.exp__cats-list button {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg-subtle, #9aa1ab);
+  cursor: pointer;
+}
+
+.exp__cats-list button:hover:not(:disabled) {
+  background: rgba(208, 52, 44, 0.1);
+  color: #d0342c;
+}
+
+.exp__cats-add {
+  display: flex;
+  gap: 6px;
+}
+
+.exp__cats-add button {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.exp__cats-add button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.exp__cats-note {
+  margin: 0;
+  color: var(--fg-subtle, #9aa1ab);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.exp__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.exp__sub {
+  margin: 0;
+  color: var(--fg-muted, #6b7280);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* Три цифры рядом. Какая из них главная, решает режим аналитики на дашборде —
+   здесь показаны все три, чтобы расшифровка сходилась в обоих режимах. */
+.exp__totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.exp__total {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 8px;
+  background: var(--bg-subtle, #f7f8fa);
+  min-width: 0;
+}
+
+.exp__total span {
+  color: var(--fg-muted, #6b7280);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.exp__total b {
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exp__total--profit b {
+  color: #0f9d58;
+}
+
+.exp__total--profit.is-negative b {
+  color: #d0342c;
+}
+
+.exp__form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1.6fr) auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.exp__field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.exp__field span {
+  color: var(--fg-muted, #6b7280);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.exp__field select,
+.exp__field input {
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 8px;
+  background: var(--bg-canvas, #ffffff);
+  color: var(--fg, #10151d);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  min-width: 0;
+}
+
+.exp__field select:focus,
+.exp__field input:focus {
+  border-color: var(--accent);
+}
+
+.exp__field--sum input {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Кнопка крупная и жирная: по ней попадают пальцем на сенсорном моноблоке. */
+.exp__add {
+  height: 44px;
+  min-width: 120px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.exp__add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.exp__error {
+  margin: 0;
+  color: #d0342c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.exp__breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exp__breakdown li {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--bg-subtle, #f7f8fa);
+  font-size: 11px;
+}
+
+.exp__breakdown b {
+  font-variant-numeric: tabular-nums;
+}
+
+.exp__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.exp__row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1.4fr) auto 28px;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-subtle, #eef0f3);
+  font-size: 12px;
+}
+
+.exp__row-date {
+  color: var(--fg-subtle, #9aa1ab);
+  font-variant-numeric: tabular-nums;
+}
+
+.exp__row-cat {
+  font-weight: 600;
+}
+
+.exp__row-cat,
+.exp__row-note {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exp__row-note {
+  color: var(--fg-muted, #6b7280);
+}
+
+.exp__row-sum {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.exp__row-del {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg-subtle, #9aa1ab);
+  cursor: pointer;
+}
+
+.exp__row-del:hover:not(:disabled) {
+  background: rgba(208, 52, 44, 0.1);
+  color: #d0342c;
+}
+
+.exp__row-auto {
+  color: var(--fg-subtle, #9aa1ab);
+  font-size: 10px;
+  text-align: center;
+}
+
+.exp__empty {
+  padding: 12px 0;
+  color: var(--fg-subtle, #9aa1ab);
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .exp__form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .exp__add {
+    width: 100%;
+  }
+}

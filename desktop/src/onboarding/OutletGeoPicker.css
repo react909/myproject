@@ -1,0 +1,273 @@
+/* ==========================================================================
+   Выбор координат точки расчётов.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+.geo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.geo__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.geo__actions {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+/* Кнопки крупные: по ним попадают пальцем на кассовом мониторе. */
+.geo__btn {
+  height: var(--ctl-h);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.geo__btn:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.geo__btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.geo__btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.geo__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* --- Поиск места по названию --------------------------------------------- */
+
+.geo__search {
+  position: relative;
+  margin-bottom: var(--sp-3);
+}
+
+.geo__search-input {
+  width: 100%;
+}
+
+.geo__search-busy {
+  position: absolute;
+  right: var(--sp-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  pointer-events: none;
+}
+
+/* Список подсказок поверх карты: карта ниже, и без z-index он ушёл бы под неё. */
+.geo__suggest {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 2px);
+  z-index: 5;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  max-height: 210px;
+  overflow-y: auto;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-lg, 0 12px 32px rgba(16, 21, 29, 0.18));
+}
+
+.geo__suggest button {
+  display: block;
+  width: 100%;
+  padding: var(--sp-3);
+  border: none;
+  border-radius: var(--r-xs, 4px);
+  background: transparent;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+  text-align: left;
+  cursor: pointer;
+}
+
+.geo__suggest button:hover {
+  background: var(--bg-hover);
+}
+
+.geo__map {
+  position: relative;
+  overflow: hidden;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-inset);
+  /* Рука, а не прицел: карту теперь тянут, а метка ставится нажатием без
+     протяжки. Прицел обещал бы, что любое касание что-то поставит. */
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.geo__map.is-panning {
+  cursor: grabbing;
+}
+
+/* Без тайлов остаётся координатная сетка: метку она держит не хуже. */
+.geo__map.is-offline {
+  background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.geo__tile {
+  position: absolute;
+  width: 256px;
+  height: 256px;
+  pointer-events: none;
+}
+
+.geo__marker {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-full);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.geo__marker:active {
+  cursor: grabbing;
+}
+
+.geo__marker i {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #ffffff;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
+.geo__marker:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.geo__empty {
+  position: absolute;
+  inset: auto var(--sp-4) var(--sp-4) var(--sp-4);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  text-align: center;
+  pointer-events: none;
+}
+
+.geo__zoom {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.geo__zoom button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+
+.geo__zoom button:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.geo__zoom button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.geo__offline-note {
+  position: absolute;
+  left: var(--sp-3);
+  top: var(--sp-3);
+  max-width: 60%;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+  pointer-events: none;
+}
+
+.geo__readout {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  color: var(--fg);
+}
+
+.geo__link {
+  color: var(--fg-muted);
+  font-family: inherit;
+  font-size: var(--fs-11);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.geo__link:hover {
+  color: var(--fg);
+}
+
+.geo__manual {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+/* Сетка здесь своя, двухколоночная — span из общей 12-колоночной не годится. */
+.geo__manual .ob-field {
+  grid-column: auto;
+}

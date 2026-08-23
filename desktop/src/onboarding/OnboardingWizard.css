@@ -1,0 +1,1152 @@
+/* ==========================================================================
+   Каркас мастера первого запуска.
+   Поля сюда не входят — они в OnboardingForm.css, общем с настройками.
+   Плотность: отступы держим на нижних ступенях шкалы, а кнопки — на верхних.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+.ow,
+.ow *,
+.ow *::before,
+.ow *::after {
+  box-sizing: border-box;
+}
+
+/*
+  Мастер занимает всю высоту родителя, а не жёсткие 100vh.
+
+  Разница не косметическая. Мастер лежит внутри .screen-shell — flex-колонки
+  высотой в экран. Требование «ровно 100vh» означало, что мастер выше своего
+  контейнера ровно на высоту всего, что стоит рядом. Подвал с кнопками
+  «Назад» и «Продолжить» уезжал за нижний край, а вместе с ним обрезался и
+  список: прокрутка внутри .ow__body считалась от завышенной высоты.
+*/
+.ow {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  /* flex: 1 — на случай, если родитель flex-колонка без заданной высоты;
+     height: 100% — когда высота у него есть. Вместе работают в обоих. */
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg-canvas);
+  color: var(--fg);
+  font-size: var(--fs-13);
+}
+
+.ow__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --- Левый рельс --------------------------------------------------------- */
+
+.ow__rail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--sp-5) var(--sp-4);
+  background: var(--bg-rail);
+  color: var(--fg-rail);
+  border-right: var(--border-w) solid var(--border);
+}
+
+.ow__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-3) var(--sp-5);
+}
+
+.ow__brand img {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+}
+
+.ow__brand strong {
+  display: block;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+}
+
+.ow__brand span {
+  display: block;
+  margin-top: 1px;
+  color: var(--fg-rail-muted);
+  font-size: var(--fs-11);
+}
+
+.ow__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: var(--sp-4) 0 0;
+  border-top: var(--border-w) solid rgba(255, 255, 255, 0.07);
+  list-style: none;
+}
+
+.ow__step button,
+.ow__step--static > span {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  color: var(--fg-rail-muted);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+/* Активация пройдена до мастера: показываем её отметкой, но не кнопкой —
+   вернуться в неё изнутри формы нельзя. */
+.ow__step--static > span {
+  cursor: default;
+}
+
+.ow__step button:hover:not(:disabled) {
+  background: var(--bg-rail-hover);
+  color: var(--fg-rail);
+}
+
+.ow__step button:disabled {
+  cursor: default;
+}
+
+.ow__step.is-active button,
+.ow__step.is-done button,
+.ow__step.is-done > span {
+  color: var(--fg-rail);
+}
+
+.ow__step.is-active button {
+  background: var(--bg-rail-hover);
+}
+
+.ow__step-marker {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: var(--border-w) solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--r-full);
+  font-size: var(--fs-10);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.ow__step.is-active .ow__step-marker {
+  border-color: var(--accent-on-rail);
+  color: var(--accent-on-rail);
+}
+
+.ow__step.is-done .ow__step-marker {
+  border-color: var(--accent-on-rail);
+  background: var(--accent-on-rail);
+  color: var(--bg-rail);
+}
+
+/* Шаг с незаполненными полями: не «сделано», а «требует внимания». */
+.ow__step.is-flagged .ow__step-marker {
+  border-color: var(--danger);
+  background: transparent;
+  color: var(--danger);
+}
+
+.ow__step.is-flagged small {
+  color: var(--danger);
+}
+
+.ow__step-text {
+  min-width: 0;
+}
+
+.ow__step-text strong {
+  display: block;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+}
+
+.ow__step-text small {
+  display: block;
+  margin-top: 1px;
+  color: var(--fg-rail-muted);
+  font-size: var(--fs-10);
+}
+
+.ow__rail-foot {
+  margin-top: auto;
+  padding-top: var(--sp-5);
+  border-top: var(--border-w) solid rgba(255, 255, 255, 0.07);
+}
+
+.ow__meta {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.ow__meta > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--fs-10);
+}
+
+.ow__meta dt {
+  color: var(--fg-rail-muted);
+}
+
+.ow__meta dd {
+  margin: 0;
+  color: var(--fg-rail);
+}
+
+.ow__rail-note {
+  margin: var(--sp-4) 0 0;
+  color: var(--fg-rail-muted);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+/* --- Правая часть -------------------------------------------------------- */
+
+.ow__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-canvas);
+}
+
+.ow__topbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  padding: var(--sp-4) var(--sp-6);
+  background: var(--bg-surface);
+  border-bottom: var(--border-w) solid var(--border);
+}
+
+/* ── Сервисный проход ────────────────────────────────────────────────────── */
+
+/*
+  Полоса сверху — единственное отличие сервисного прохода от установки на вид.
+  Она нужна: шаги те же самые, поля те же самые, и без метки специалист не
+  отличит правку работающего магазина от установки с нуля.
+*/
+.ow--service .ow__topbar {
+  border-top: 3px solid var(--warning);
+}
+
+/*
+  Выход стоит в шапке на каждом шаге. Не «отмена» в подвале рядом с
+  «Продолжить»: специалист приходит поправить одно поле, и уйти он должен
+  оттуда, где стоит, а не пройдя мастер до конца.
+*/
+.ow__service-exit {
+  flex-shrink: 0;
+  align-self: center;
+  height: var(--ctl-h);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ow__service-exit:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.ow__service-exit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Пока читаются текущие реквизиты. Форму до этого не показываем: пустые поля
+   читаются как «настройка потерялась». */
+.ow__service-loading {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  height: 100%;
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+.ow__service-loading strong {
+  color: var(--fg);
+  font-size: var(--fs-16, 16px);
+}
+
+/*
+  Плашка восстановленного черновика. Человек открыл мастер и увидел
+  заполненные поля — он обязан понимать, откуда они взялись, и иметь
+  возможность начать с чистого листа одним нажатием.
+*/
+.ow__draft-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-6);
+  border-bottom: var(--border-w) solid var(--border);
+  background: var(--accent-soft, rgba(37, 99, 235, 0.08));
+  color: var(--fg);
+  font-size: var(--fs-12);
+  line-height: var(--lh-normal);
+}
+
+.ow__draft-note-actions {
+  display: flex;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+}
+
+.ow__draft-note-actions button {
+  height: var(--ctl-h);
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: var(--fs-11);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+
+.ow__draft-note-actions button:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.ow__eyebrow {
+  display: block;
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.ow__topbar h1 {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--fs-19);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.015em;
+  line-height: var(--lh-tight);
+}
+
+.ow__topbar p {
+  margin: 1px 0 0;
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+}
+
+.ow__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex: 0 0 auto;
+  padding-bottom: var(--sp-1);
+}
+
+.ow__progress-value {
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.ow__progress-track {
+  display: block;
+  width: 120px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+
+.ow__progress-track i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--dur) var(--ease);
+}
+
+.ow__form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.ow__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--sp-5) var(--sp-6) var(--sp-7);
+}
+
+.ow__section {
+  width: min(940px, 100%);
+}
+
+/* --- Тариф --------------------------------------------------------------- */
+
+/*
+  Переключатель-сегмент на два варианта: как ширина рулона на шаге оформления.
+  Кнопки равной ширины и переносятся на узком экране — на моноблоке 1024 точки
+  два столбца по 220 не помещаются.
+*/
+.ow__editions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-3);
+}
+
+.ow__edition {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.ow__edition:hover {
+  border-color: var(--border-strong);
+}
+
+.ow__edition.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ow__edition strong {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+}
+
+.ow__edition small {
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+/* --- Карточки профиля ---------------------------------------------------- */
+
+.ow__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--sp-4);
+}
+
+/* Режим склада — два варианта, им нужна ширина под пояснение. */
+.ow__cards--wide {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.ow__card {
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.ow__card:hover {
+  border-color: var(--border-strong);
+}
+
+.ow__card.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ow__card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.ow__card-head strong {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+}
+
+.ow__card p {
+  margin: var(--sp-3) 0 0;
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+.ow__card small {
+  display: block;
+  margin-top: var(--sp-3);
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+}
+
+.ow__radio {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--r-full);
+}
+
+.ow__radio i {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: transparent;
+}
+
+.ow__card.is-selected .ow__radio {
+  border-color: var(--accent);
+}
+
+.ow__card.is-selected .ow__radio i {
+  background: var(--accent);
+}
+
+/* --- Способы оплаты ------------------------------------------------------ */
+
+.ow__methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: var(--sp-3);
+}
+
+.ow__method {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.ow__method:hover {
+  border-color: var(--border-strong);
+}
+
+.ow__method.is-checked {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ow__method.is-locked {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.ow__method input {
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  flex: 0 0 auto;
+  accent-color: var(--accent);
+}
+
+.ow__method strong {
+  display: block;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+}
+
+.ow__method small {
+  display: block;
+  margin-top: 1px;
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+}
+
+/* --- Тема ---------------------------------------------------------------- */
+
+.ow__themes {
+  display: flex;
+  gap: var(--sp-4);
+}
+
+.ow__theme {
+  padding: var(--sp-3);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.ow__theme.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ow__theme strong {
+  display: block;
+  margin-top: var(--sp-3);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+}
+
+.ow__theme-thumb {
+  position: relative;
+  display: block;
+  width: 132px;
+  height: 78px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  border: var(--border-w) solid var(--border);
+}
+
+.ow__theme-thumb[data-mode='light'] {
+  background: #f4f5f7;
+}
+
+.ow__theme-thumb[data-mode='dark'] {
+  background: #0b0e13;
+}
+
+.ow__theme-rail {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30px;
+}
+
+.ow__theme-thumb[data-mode='light'] .ow__theme-rail {
+  background: #10151d;
+}
+
+.ow__theme-thumb[data-mode='dark'] .ow__theme-rail {
+  background: #06090d;
+}
+
+.ow__theme-bar {
+  position: absolute;
+  top: 12px;
+  left: 40px;
+  width: 54px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.ow__theme-line {
+  position: absolute;
+  left: 40px;
+  height: 6px;
+  width: 74px;
+  border-radius: 3px;
+  background: rgba(128, 138, 153, 0.45);
+}
+
+.ow__theme-line:not(.is-short) {
+  top: 32px;
+}
+
+.ow__theme-line.is-short {
+  top: 46px;
+  width: 46px;
+}
+
+/* --- Пароли -------------------------------------------------------------- */
+
+.ow__secret {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.ow__secret-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ow__secret-row .ob-control {
+  padding-right: 82px;
+}
+
+.ow__reveal {
+  position: absolute;
+  right: var(--sp-2);
+  height: 26px;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-xs);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.ow__reveal:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.ow__strength {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+}
+
+.ow__strength i {
+  height: 3px;
+  border-radius: var(--r-full);
+  background: var(--bg-inset);
+  transition: background var(--dur) var(--ease);
+}
+
+.ow__strength.level-1 i:nth-child(1) {
+  background: var(--danger);
+}
+
+.ow__strength.level-2 i:nth-child(-n + 2) {
+  background: var(--warning);
+}
+
+.ow__strength.level-3 i {
+  background: var(--success);
+}
+
+/* PIN набирают на сенсорном экране — цифры крупные и разрежённые. */
+.ow__pin {
+  font-family: var(--font-mono);
+  font-size: var(--fs-16);
+  letter-spacing: 0.35em;
+  text-align: center;
+}
+
+.ow__pin-note {
+  margin: var(--sp-3) 0 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+.ow__pin-note strong {
+  color: var(--fg);
+}
+
+/* --- Email владельца ----------------------------------------------------- */
+
+.ow__owner-email {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.ow__owner-email .ob-control:disabled {
+  background: var(--bg-inset);
+  color: var(--fg-muted);
+  cursor: not-allowed;
+}
+
+.ow__link-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-1);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  cursor: pointer;
+}
+
+.ow__link-check input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+}
+
+/* --- Шаг проверки -------------------------------------------------------- */
+
+.ow__review {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  gap: var(--sp-6);
+  width: min(1040px, 100%);
+  align-items: start;
+}
+
+.ow__review-main {
+  min-width: 0;
+}
+
+.ow__review-preview {
+  position: sticky;
+  top: 0;
+  min-width: 0;
+}
+
+.ow__review-preview .ob-label {
+  display: block;
+  margin-bottom: var(--sp-3);
+}
+
+.ow__review-lead {
+  margin: 0 0 var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border-w) solid transparent;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+}
+
+.ow__review-lead--error {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* --- Карточки сводки ----------------------------------------------------- */
+
+.ow__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--sp-4);
+}
+
+.ow__sum {
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.ow__sum--error {
+  border-color: var(--danger-border);
+}
+
+.ow__sum header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--bg-subtle);
+  border-bottom: var(--border-w) solid var(--border);
+}
+
+.ow__sum header h3 {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+}
+
+.ow__badge {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-full);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-bold);
+}
+
+.ow__badge--ok {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.ow__badge--warn {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.ow__badge--error {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.ow__sum-edit {
+  flex: 0 0 auto;
+  height: 26px;
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-10);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+
+.ow__sum-edit:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.ow__sum dl {
+  margin: 0;
+  padding: var(--sp-2) 0;
+}
+
+.ow__sum dl > div {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: var(--sp-3);
+  align-items: baseline;
+  padding: var(--sp-2) var(--sp-4);
+}
+
+.ow__sum dt {
+  color: var(--fg-muted);
+  font-size: var(--fs-10);
+}
+
+.ow__sum dd {
+  margin: 0;
+  font-size: var(--fs-11);
+  word-break: break-word;
+}
+
+.ow__sum dd.is-empty {
+  color: var(--fg-subtle);
+  font-style: italic;
+}
+
+.ow__sum-problems {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4) var(--sp-4);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  border-top: var(--border-w) solid var(--border-subtle);
+}
+
+.ow__sum-problems li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--fs-10);
+  color: var(--danger);
+}
+
+.ow__sum-problems li span {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ow__sum-gaps {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  border-top: var(--border-w) solid var(--border-subtle);
+  color: var(--warning);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+/* Кнопка «Исправить» — контурная на заливке, а не белым по белому. */
+.ow__fix {
+  flex: 0 0 auto;
+  height: 30px;
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--danger);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--danger);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.ow__fix:hover {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.ow__fix--quiet {
+  border-color: var(--border);
+  color: var(--fg-muted);
+}
+
+.ow__fix--quiet:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  color: var(--fg);
+}
+
+/* --- Нижняя панель ------------------------------------------------------- */
+
+.ow__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding: var(--sp-4) var(--sp-6);
+  background: var(--bg-surface);
+  border-top: var(--border-w) solid var(--border);
+}
+
+.ow__footer-msg {
+  min-width: 0;
+  flex: 1;
+}
+
+.ow__error,
+.ow__ready {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  border: var(--border-w) solid transparent;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+}
+
+.ow__error {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.ow__ready {
+  border-color: rgba(22, 163, 74, 0.3);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.ow__footer-actions {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+/* Кнопки крупные и жирные: по ним попадают пальцем на кассовом мониторе. */
+.ow__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--ctl-h-xl);
+  padding: 0 var(--sp-7);
+  border: var(--border-w) solid transparent;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.ow__btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.ow__btn--primary {
+  min-width: 176px;
+  background: var(--accent);
+  border-color: var(--accent);
+  /* --accent-fg считается из яркости акцента (applyTheme), поэтому на светлом
+     акценте текст тёмный, а не белый по белому. */
+  color: var(--accent-fg);
+}
+
+.ow__btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.ow__btn--ghost {
+  border-color: var(--border);
+  background: var(--bg-surface);
+  color: var(--fg);
+}
+
+.ow__btn--ghost:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.ow__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1180px) {
+  .ow {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+
+  .ow__review {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ow__review-preview {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .ow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ow__rail {
+    display: none;
+  }
+
+  .ow__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ow__footer-actions .ow__btn {
+    flex: 1;
+  }
+}

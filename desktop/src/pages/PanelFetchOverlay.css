@@ -1,0 +1,47 @@
+/* Полоса «идёт обновление» — поверх уже показанных данных, не вместо них. */
+
+.pfo {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  font-size: 12px;
+  color: var(--accent-text);
+}
+
+/*
+  Бегущая полоска.
+
+  Движение через transform: раскладку оно не трогает, и на слабой машине
+  анимация идёт на композиторе, не отнимая время у самой загрузки.
+*/
+.pfo__bar {
+  position: relative;
+  flex: 0 0 64px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-soft-strong);
+  overflow: hidden;
+}
+
+.pfo__bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  border-radius: inherit;
+  background: var(--accent);
+  animation: pfo-run 900ms ease-in-out infinite;
+}
+
+@keyframes pfo-run {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+
+.pfo__label { font-weight: 600; }

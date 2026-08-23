@@ -1,0 +1,331 @@
+
+/* ══════════════════════════════════════════
+   БАЗА
+══════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.ls-root {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #f3f4f6; /* Чистый, дорогой серый цвет фона */
+}
+
+/* ══════════════════════════════════════════
+   ЛЕВАЯ ПАНЕЛЬ (Идеальные пропорции)
+══════════════════════════════════════════ */
+.ls-left {
+  flex: 0 0 340px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 40px; /* Срезали лишний воздух */
+  background: var(--accent);
+  overflow: hidden;
+  gap: 32px;
+  box-shadow: none;
+  z-index: 2;
+}
+
+/* Декорации */
+.ls-left__circle {
+  display: none;
+}
+.ls-left__circle--lg { width: 440px; height: 440px; bottom: -120px; right: -120px; }
+.ls-left__circle--sm { width: 200px; height: 200px; top: -60px; left: -60px; }
+
+/* ── Бренд (Компактно и красиво) ── */
+.ls-brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ls-logo-wrap {
+  width: 88px; /* Не огромный, но очень заметный */
+  height: 88px;
+  border-radius: 22px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.ls-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.ls-brand__name {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  color: #1a1200;
+  line-height: 1;
+}
+
+.ls-brand__name span { color: rgba(0, 0, 0, 0.35); }
+
+.ls-brand__tagline {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 6px;
+}
+
+.ls-divider {
+  position: relative;
+  z-index: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* ── Фичи ── */
+.ls-features {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.ls-feature {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.ls-feature__icon {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1200;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.ls-feature__body { display: flex; flex-direction: column; gap: 2px; }
+.ls-feature__title { font-size: 15px; font-weight: 700; color: #1a1200; }
+.ls-feature__desc { font-size: 13px; color: rgba(0, 0, 0, 0.6); }
+
+/* Версия (Аккуратная плашка) */
+.ls-left__footer { position: relative; z-index: 1; }
+.ls-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.65);
+}
+.ls-version b { color: #1a1200; font-weight: 700; }
+.ls-version__dot { width: 6px; height: 6px; border-radius: 50%; background: #1a1200; opacity: 0.3; }
+
+/* ══════════════════════════════════════════
+   ПРАВАЯ ПАНЕЛЬ (Авторизация)
+══════════════════════════════════════════ */
+.ls-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* ── Карточка (Премиум тени и компактность) ── */
+.ls-card {
+  width: 100%;
+  max-width: 420px; /* Идеально собрано, не расползается */
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.ls-card__accent {
+  height: 5px;
+  background: var(--accent);
+}
+
+
+/* ── Заголовок ── */
+.ls-heading {
+  padding: 36px 40px 0;
+  margin-bottom: 28px;
+}
+
+.ls-heading__title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111111;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.ls-heading__sub {
+  font-size: 14.5px;
+  color: #888888;
+}
+
+/* ── Форма ── */
+.ls-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 40px 40px;
+}
+
+.ls-field-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+.ls-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444444;
+  margin-left: 2px;
+}
+
+/* ── Поля ввода (Средний идеальный размер) ── */
+.ls-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px; /* Не 64px, и не 52px. Золотая середина. */
+  padding: 0 16px;
+  background: #f8f8fa;
+  border: 1.5px solid #e8e8ed;
+  border-radius: 14px;
+  transition: all 0.2s ease;
+}
+
+.ls-field--focused {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.ls-field--filled:not(.ls-field--focused) {
+  border-color: #d1d1d6;
+  background: #f0f0f4;
+}
+
+.ls-field__icon { color: #a0a0ab; display: flex; }
+/* Значок поля под фокусом — акцентом. Читаемая на белом версия фирменного
+   цвета, а не сам акцент: значок мелкий, и светлая мята на нём пропала бы. */
+.ls-field--focused .ls-field__icon { color: var(--accent-text); }
+.ls-field--filled .ls-field__icon { color: #888891; }
+
+.ls-field__input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 16px; /* Отлично читается, не гигантский */
+  font-weight: 500;
+  color: #111111;
+  height: 100%;
+}
+.ls-field__input::placeholder { color: #bbbbc2; }
+
+/* Кнопки внутри поля */
+.ls-field__btn {
+  background: none;
+  border: none;
+  color: #a0a0ab;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.2s;
+}
+.ls-field__btn:hover { background: rgba(0, 0, 0, 0.06); color: #333; }
+
+/* ── Кнопка ── */
+.ls-submit {
+  height: 56px;
+  border: none;
+  border-radius: 14px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 30%, transparent);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.ls-submit:hover:not(:disabled) {
+  background: var(--accent-hover);
+  filter: brightness(0.95);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.ls-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.ls-submit__inner { display: flex; align-items: center; justify-content: center; gap: 10px; height: 100%; }
+
+/* ── Ошибка ── */
+.ls-error {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(240, 68, 56, 0.08);
+  border: 1px solid rgba(240, 68, 56, 0.2);
+  color: #d32f2f;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Спиннер ── */
+.ls-spinner { width: 20px; height: 20px; display: inline-flex; }
+.ls-spinner__arc {
+  width: 100%; height: 100%; border-radius: 50%;
+  border: 2.5px solid rgba(26,18,0,0.15); border-top-color: #1a1200;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════
+   АДАПТИВНОСТЬ
+══════════════════════════════════════════ */
+@media (max-width: 860px) {
+  .ls-root { flex-direction: column; background: var(--accent); }
+  .ls-left { flex: none; padding: 32px; gap: 20px; box-shadow: none; }
+  .ls-features, .ls-divider { display: none; }
+  .ls-right {
+    background: #f3f4f6;
+    border-radius: 28px 28px 0 0;
+    padding: 32px 20px;
+    align-items: flex-start;
+  }
+  .ls-card { box-shadow: none; border: none; background: transparent; }
+  .ls-card__accent { display: none; }
+  .ls-heading { padding: 0; margin-bottom: 24px; }
+  .ls-form { padding: 0; }
+}

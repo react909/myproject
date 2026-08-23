@@ -1,0 +1,22 @@
+{
+  "width": 1440,
+  "height": 900,
+  "email": "demo@kassir.kg",
+  "shots": [
+    { "name": "13-purchase-list", "route": "/panel?tab=purchase", "settle": 3200 },
+    {
+      "name": "14-purchase-doc",
+      "route": "/panel?tab=purchase",
+      "settle": 3200,
+      "script": "const r=document.querySelector('.ppu__list-row[data-row=\"0\"]'); r?.dispatchEvent(new MouseEvent('dblclick',{bubbles:true})); true",
+      "after": 2000
+    },
+    {
+      "name": "22-purchase-unpost",
+      "route": "/panel?tab=purchase",
+      "settle": 3200,
+      "script": "(async()=>{ document.querySelector('.ppu__list-row[data-row=\"0\"]')?.dispatchEvent(new MouseEvent('dblclick',{bubbles:true})); await new Promise(r=>setTimeout(r,2000)); [...document.querySelectorAll('.dsk__btn')].find(b=>b.textContent.trim()==='Отменить проведение')?.click(); return true })()",
+      "after": 2200
+    }
+  ]
+}

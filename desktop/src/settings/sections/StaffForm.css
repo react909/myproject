@@ -1,0 +1,110 @@
+/* ==========================================================================
+   Форма сотрудника. Поля плотные, кнопки крупные: касса сенсорная.
+   ========================================================================== */
+
+.staff-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 10px;
+  background: var(--bg-subtle, #f7f8fa);
+}
+
+.staff-form__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.staff-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px 12px;
+  align-items: start;
+}
+
+.staff-form__hint {
+  color: var(--fg-subtle, #9aa1ab);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+/* PIN набирают на сенсорном экране — цифры крупные и разрежённые. */
+.staff-form__pin {
+  font-family: var(--font-mono, ui-monospace, Consolas, monospace);
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+.staff-form__check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  /* Строка целиком кликабельна: попасть пальцем в саму галочку на моноблоке
+     тяжело, а промах читается как «не работает». */
+  min-height: 32px;
+  padding: 4px 0;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.staff-form__check input {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  flex: 0 0 auto;
+  accent-color: var(--accent);
+}
+
+.staff-form__check--clear {
+  grid-column: 1 / -1;
+  color: #b4442f;
+}
+
+.staff-form__perms {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 8px;
+  background: var(--bg-surface, #ffffff);
+}
+
+.staff-form__perms legend {
+  padding: 0 4px;
+  color: var(--fg-muted, #6b7280);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.staff-form__perms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2px 12px;
+}
+
+.staff-form__problems {
+  margin: 0;
+  padding: 8px 10px 8px 26px;
+  border: 1px solid rgba(208, 52, 44, 0.35);
+  border-radius: 8px;
+  background: rgba(208, 52, 44, 0.07);
+  color: #b4442f;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.staff-form__error {
+  margin: 0;
+  color: #b4442f;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.staff-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

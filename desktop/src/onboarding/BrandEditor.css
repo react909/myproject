@@ -1,0 +1,488 @@
+/* ==========================================================================
+   Оформление: бренд, подпись логотипа, вид чека, цвета.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+/* --- Карточки выбора бренда ---------------------------------------------- */
+
+.be-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-4);
+}
+
+.be-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 118px;
+  padding: var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.be-card:hover {
+  border-color: var(--border-strong);
+}
+
+.be-card.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.be-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.be-card__head strong {
+  font-size: var(--fs-14);
+  font-weight: var(--fw-bold);
+}
+
+.be-card__radio {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--r-full);
+}
+
+.be-card__radio i {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--r-full);
+  background: transparent;
+}
+
+.be-card.is-selected .be-card__radio {
+  border-color: var(--accent);
+}
+
+.be-card.is-selected .be-card__radio i {
+  background: var(--accent);
+}
+
+.be-card p {
+  margin: var(--sp-4) 0 0;
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+/* --- Общие элементы ------------------------------------------------------ */
+
+.be-text,
+.be-receipt,
+.be-colors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.be-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.be-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--sp-4);
+}
+
+.be-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  cursor: pointer;
+}
+
+.be-check input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+  accent-color: var(--accent);
+}
+
+.be-check strong {
+  display: block;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+}
+
+.be-check small {
+  display: block;
+  margin-top: 1px;
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+.be-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.be-chip {
+  height: var(--ctl-h);
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.be-chip:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.be-chip.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.be-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.be-note {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+/* --- Шаблоны начертания -------------------------------------------------- */
+
+.be-templates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--sp-3);
+}
+
+.be-template {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  color: var(--fg);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.be-template.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.be-template b {
+  font-size: var(--fs-16);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.be-template small {
+  color: var(--fg-subtle);
+  font-family: var(--font-sans, inherit);
+  font-size: var(--fs-10);
+  font-weight: var(--fw-medium);
+}
+
+/* --- Живое превью подписи ------------------------------------------------- */
+
+.be-preview-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/*
+  Пара «до/после» для объёмного вида.
+
+  Обе полосы рядом и одинаковой ширины: эффект мягкий намеренно, и по одной
+  полосе за раз разницу не увидеть — глаз не помнит предыдущую. Колонки
+  сжимаются до одной на узком экране, но тогда полосы стоят друг под другом и
+  сравнение всё ещё работает.
+*/
+.be-emboss {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.be-emboss figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+  min-width: 0;
+}
+
+.be-emboss figcaption {
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+}
+
+/* --- Логотип в чеке ------------------------------------------------------- */
+
+.be-receipt__crop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.be-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+/*
+  Отказ показывается там же, куда человек нажал.
+
+  Раньше сообщение уходило одной строкой в подвал мастера: на длинном шаге он
+  вне поля зрения, и выбор негодного файла выглядел как «нажал — ничего не
+  произошло».
+*/
+.be-error {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border-w) solid var(--danger);
+  border-radius: var(--r-sm);
+  background: var(--danger-soft, rgba(208, 52, 44, 0.08));
+  color: var(--danger);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+/*
+  Ч/б превью показывается всегда, даже когда печать выключена: термопринтер
+  знает только чёрное и белое, и бледный логотип выйдет пустым пятном. Лента в
+  превью белая при любой теме — печать идёт на белом, и врать об этом нельзя.
+*/
+/* Шаблон и порог стоят рядом с превью: смысл настройки виден по результату,
+   а не по названию — «контрастный» ничего не говорит, пока не видно, что он
+   делает с этим логотипом. */
+.be-thermal-tune {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+.be-threshold input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.be-thermal {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: #ffffff;
+}
+
+.be-thermal img {
+  max-width: 100%;
+  /* Точки не сглаживаются: превью показывает ровно тот растр, что уйдёт на
+     принтер, а размытая копия скрыла бы провалившиеся полутона. */
+  image-rendering: pixelated;
+}
+
+.be-thermal figcaption {
+  color: #5b6472;
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+  text-align: center;
+}
+
+/* --- Цвета --------------------------------------------------------------- */
+
+.be-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.be-swatch {
+  width: 34px;
+  height: 34px;
+  border: 2px solid transparent;
+  border-radius: var(--r-sm);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+
+.be-swatch.is-active {
+  border-color: var(--fg);
+}
+
+.be-custom {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.be-custom__row {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.be-color-input {
+  width: 44px;
+  height: var(--ctl-h);
+  padding: 2px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  cursor: pointer;
+}
+
+.be-hex {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-mono);
+  text-transform: lowercase;
+}
+
+/* Возврат к стандартному цвету. Не главное действие блока — поэтому обычная
+   кнопка с обводкой, а не заливка акцентом: залитая акцентом она сама была бы
+   образцом цвета и спорила бы с превью рядом. */
+.be-reset {
+  flex: 0 0 auto;
+  height: var(--ctl-h);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.be-reset:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.be-reset:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/*
+  Превью фирменного цвета.
+
+  Ни одного цвета своими значениями: всё берётся из тех же токенов, которыми
+  красится настоящий интерфейс. Поэтому превью не может «показать не то» —
+  показать другое ему просто нечем.
+*/
+.be-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.be-preview__tabs {
+  display: flex;
+  gap: var(--sp-2);
+  padding-bottom: var(--sp-2);
+  border-bottom: var(--border-w) solid var(--border);
+}
+
+.be-preview__tab {
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-xs) var(--r-xs) 0 0;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  color: var(--fg-subtle);
+}
+
+.be-preview__tab.is-active {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.be-preview__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5);
+  border: var(--border-w) solid var(--accent-border);
+  border-radius: var(--r-sm);
+  background: var(--accent-soft);
+}
+
+.be-preview__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  font-size: var(--fs-12);
+  color: var(--fg-muted);
+}
+
+.be-preview__sum {
+  font-size: var(--fs-16);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-text-strong);
+}
+
+/* Возврат — семантика, а не оформление: остаётся красным при любом акценте. */
+.be-preview__refund {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--danger-text);
+}
+
+/* Живая кнопка: контраст текста виден сразу, а не после запуска кассы. */
+.be-demo {
+  height: var(--ctl-h-xl);
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-bold);
+  cursor: default;
+}

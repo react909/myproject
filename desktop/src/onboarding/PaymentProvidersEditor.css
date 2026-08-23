@@ -1,0 +1,340 @@
+/* ==========================================================================
+   Настройка способов безналичной оплаты.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+.pp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/*
+  Список растёт по содержимому — своей прокрутки у него нет.
+
+  Она здесь была и оказалась хуже болезни. Шаг мастера прокручивается сам
+  (.ow__body), а список внутри него был ограничен 46vh со своим `overflow-y`.
+  Получались два вложенных скролла: уже на втором способе оплаты половина
+  карточек оказывалась в невидимой части внутренней области, на третьем до
+  полей нельзя было добраться вовсе — внешняя полоса прокрутки до них не
+  доставала, а внутреннюю на моноблоке ещё надо догадаться потянуть.
+
+  Прокрутка на шаге должна быть одна. Кнопки добавления не уезжают за нижний
+  край не потому, что список подрезан, а потому, что они закреплены снизу
+  (см. .pp__add) — уже относительно прокрутки шага.
+*/
+.pp__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin: 0;
+  padding: 2px;
+  list-style: none;
+  /*
+    Список — тоже flex-элемент (внутри .pp), и по умолчанию он сжимается.
+    С четырьмя способами это было видно сразу: коробка списка оставалась
+    прежней высоты, карточки вылезали за неё и накрывали кнопки добавления.
+    Расти должен список, а прокручиваться — шаг.
+  */
+  flex: 0 0 auto;
+}
+
+/*
+  Карточка растёт по содержимому и не сжимается.
+
+  `flex-shrink: 0` здесь обязателен, а не для порядка. Список — колоночный
+  flex с ограниченной высотой, и по умолчанию flex-элементы в нём ужимаются,
+  чтобы влезть. Вместе с `overflow: hidden` это срезало карточкам низ:
+  подпись «Заменить картинку QR» обрывалась, превью вылезало за границу.
+  Сжиматься должен не элемент — прокручиваться должен список.
+*/
+.pp__item {
+  flex: 0 0 auto;
+  height: auto;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+}
+
+/* Выключенный провайдер виден, но не притворяется рабочим. */
+.pp__item.is-off {
+  opacity: 0.65;
+}
+
+/* Скругление задаётся самой шапке: карточке больше нельзя ставить
+   overflow: hidden — именно он и срезал содержимое. */
+.pp__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--bg-subtle);
+  border-bottom: var(--border-w) solid var(--border);
+  border-radius: calc(var(--r-md) - 1px) calc(var(--r-md) - 1px) 0 0;
+}
+
+/* Свёрнутая карточка — ровно одна строка: галочка, название, миниатюра,
+   кнопки. Готовность в ней показывает точка в шапке, а не отдельный абзац. */
+.pp__item.is-collapsed .pp__head {
+  border-bottom: none;
+  border-radius: calc(var(--r-md) - 1px);
+}
+
+.pp__item.is-collapsed .pp__status {
+  display: none;
+}
+
+.pp__dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--r-full, 999px);
+  background: var(--warning);
+}
+
+.pp__dot.is-ready {
+  background: var(--success);
+}
+
+.pp__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  cursor: pointer;
+}
+
+.pp__toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+.pp__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: var(--fw-semibold);
+}
+
+.pp__remove {
+  flex: 0 0 auto;
+  height: 30px;
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+
+.pp__remove:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.pp__body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+}
+
+.pp__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+/*
+  Место под превью QR занято всегда, ещё до загрузки.
+
+  Раньше картинка появлялась из ниоткуда: высота карточки менялась, список
+  подпрыгивал, и человек терял из виду то, что настраивал. Фиксированный
+  квадрат 160×160 решает это в корне — загрузка больше не меняет высоту.
+*/
+.pp__qr-slot {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 160px;
+  height: 160px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.pp__qr {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.pp__qr-empty {
+  padding: 0 var(--sp-3);
+  color: #9aa1ab;
+  font-size: var(--fs-10);
+  text-align: center;
+}
+
+/* Переобрезка уже загруженной картинки: снимок из банка почти всегда с
+   полями, и с первого раза обрезать «в самый раз» получается не всегда. */
+.pp__recrop {
+  align-self: start;
+  height: var(--ctl-h);
+  padding: 0 var(--sp-4);
+  font-size: var(--fs-11);
+}
+
+/* Миниатюра в шапке — чтобы узнать способ, не разворачивая карточку. */
+.pp__thumb {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-xs, 4px);
+  background: #ffffff;
+  object-fit: contain;
+}
+
+.pp__collapse {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pp__collapse:hover {
+  border-color: var(--border-strong);
+  color: var(--fg);
+}
+
+/* Свёрнутая карточка: видно название, галочку, миниатюру и готовность. */
+.pp__item.is-collapsed .pp__status {
+  border-top: none;
+}
+
+.pp__secret {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.pp__secret .ob-control {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pp__save-secret {
+  flex: 0 0 auto;
+  height: var(--ctl-h);
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--accent);
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.pp__save-secret:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* «Настроить позже» — не отговорка, а штатный путь: ключи банк выдаёт днями. */
+.pp__later {
+  margin: 0;
+  padding: var(--sp-3);
+  border: var(--border-w) dashed var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+.pp__status {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-top: var(--border-w) solid var(--border-subtle);
+  color: var(--warning);
+  font-size: var(--fs-11);
+}
+
+.pp__status.is-ready {
+  color: var(--success);
+}
+
+.pp__error {
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+}
+
+/*
+  Кнопки добавления стоят под списком обычным блоком.
+
+  Закреплять их (position: sticky) больше нельзя: прокрутка теперь одна, на
+  весь шаг, и закреплённый снизу блок висел бы поверх того, что идёт после
+  способов оплаты — эквайринга и настроек QR. Доступность кнопок обеспечивает
+  сама прокрутка шага, а перенос на новую строку при нехватке ширины — grid
+  с auto-fit ниже.
+*/
+.pp__add {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: var(--border-w) solid var(--border-subtle);
+}
+
+.pp__add-btn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border: var(--border-w) dashed var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.pp__add-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.pp__add-btn strong {
+  font-size: var(--fs-12);
+  font-weight: var(--fw-bold);
+}
+
+.pp__add-btn small {
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+.pp__footnote {
+  margin: 0;
+  color: var(--fg-subtle);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}

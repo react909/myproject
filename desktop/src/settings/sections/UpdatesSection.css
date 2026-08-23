@@ -1,0 +1,604 @@
+/* ════════════════════════════════════
+   UPDATES SECTION
+════════════════════════════════════ */
+
+.updates-section {
+  --upd-accent: #ef4444;
+  --upd-accent-2: #f97316;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 720px;
+}
+
+.upd-premium {
+  padding: 24px 28px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #1a0a0a 0%, #2a1510 55%, #1c1210 100%);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.upd-premium__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.upd-premium__label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fca5a5;
+}
+
+.upd-premium__version {
+  margin: 4px 0 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff5f5;
+}
+
+.upd-premium__badge {
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(239, 68, 68, 0.25);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.upd-premium__progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upd-premium__progress-fill {
+  flex: 1;
+  height: 6px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--upd-accent), var(--upd-accent-2));
+}
+
+.upd-premium__error {
+  margin: 0;
+  font-size: 13px;
+  color: #f87171;
+}
+
+.upd-premium__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.upd-premium__hint {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* legacy hero (removed from UI) */
+.upd-hero {
+  display: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 32px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #1a0a0a 0%, #2a1510 55%, #1c1210 100%);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  box-shadow:
+    0 8px 32px rgba(239, 68, 68, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.upd-hero__text {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.upd-hero__title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff5f5;
+}
+
+.upd-hero__sub {
+  margin: 0;
+  font-size: 14px;
+  color: #fca5a5;
+}
+
+.upd-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* ══ БАННЕРЫ ══ */
+.upd-banner {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  animation: upd-fadein 0.35s ease;
+}
+
+@keyframes upd-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Баннер: новое обновление ── */
+.upd-banner--new {
+  background: linear-gradient(145deg,
+    color-mix(in srgb, var(--upd-accent) 18%, var(--surface-2, #1c1c1c)),
+    var(--surface-2, #1c1c1c)
+  );
+  border-color: color-mix(in srgb, var(--upd-accent) 45%, transparent);
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Свечение за баннером */
+.upd-banner__glow {
+  position: absolute;
+  top: -60px;
+  right: -40px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--upd-accent) 22%, transparent) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.upd-banner__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.upd-banner__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--upd-accent) 28%, transparent);
+  color: #f02222;
+  border: 1px solid color-mix(in srgb, var(--upd-accent) 50%, transparent);
+}
+
+.upd-banner__pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: upd-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes upd-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+
+.upd-banner__versions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted, #777);
+  font-variant-numeric: tabular-nums;
+}
+
+.upd-banner__center {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.upd-banner__title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary, #f2f2f2);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.upd-banner__sub {
+  font-size: 13px;
+  color: var(--text-muted, #888);
+  margin: 0;
+}
+
+/* Прогресс внутри баннера */
+.upd-banner__progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.upd-banner__progress-track {
+  flex: 1;
+  height: 5px;
+  background: color-mix(in srgb, var(--upd-accent) 18%, var(--surface-3, #2a2a2a));
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.upd-banner__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--upd-accent), var(--upd-accent-2));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.upd-banner__progress-pct {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--upd-accent-2);
+  font-variant-numeric: tabular-nums;
+  min-width: 34px;
+  text-align: right;
+}
+
+/* Готово */
+.upd-banner__done {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4ade80;
+}
+
+/* Кнопки внутри баннера */
+.upd-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Баннер: всё актуально ── */
+.upd-banner--ok {
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: color-mix(in srgb, #22c55e 7%, var(--surface-2, #1c1c1c));
+  border-color: color-mix(in srgb, #22c55e 22%, transparent);
+}
+
+.upd-banner__ok-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: color-mix(in srgb, #22c55e 14%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4ade80;
+  flex-shrink: 0;
+}
+
+.upd-banner__ok-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #f2f2f2);
+  margin: 0 0 3px;
+}
+
+.upd-banner__ok-sub {
+  font-size: 13px;
+  color: var(--text-muted, #888);
+  margin: 0;
+}
+
+/* ── Баннер: idle ── */
+.upd-banner--idle {
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: var(--surface-2, #1c1c1c);
+  border-color: var(--border, #2a2a2a);
+  min-height: 96px;
+}
+
+.upd-banner__idle-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.upd-banner__idle-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--surface-3, #252525);
+  border: 1px solid var(--border, #2e2e2e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, #777);
+  flex-shrink: 0;
+}
+
+.upd-banner__idle-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #f0f0f0);
+  margin: 0 0 3px;
+}
+
+.upd-banner__idle-sub {
+  font-size: 12px;
+  color: var(--text-muted, #888);
+  margin: 0;
+}
+
+/* ══ КНОПКИ ══ */
+.upd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.12s, background 0.15s, box-shadow 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.upd-btn:active { transform: scale(0.96); }
+.upd-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Призыв к действию — установить */
+.upd-btn--install {
+  background: linear-gradient(135deg, var(--upd-accent) 0%, var(--upd-accent-2) 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+}
+.upd-btn--install:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 28px rgba(249, 115, 22, 0.45);
+}
+
+.upd-btn--install-lg,
+.upd-btn--check-lg {
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 14px;
+  min-height: 54px;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.upd-btn--check-lg {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+.upd-btn--check-lg:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(254, 202, 202, 0.5);
+}
+
+/* Ghost — что нового */
+.upd-btn--ghost {
+  background: color-mix(in srgb, var(--upd-accent) 12%, transparent);
+  color: #e40c0c;
+  border: 1px solid color-mix(in srgb, var(--upd-accent) 35%, transparent);
+}
+.upd-btn--ghost:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--upd-accent) 22%, transparent);
+}
+
+/* Проверить */
+.upd-btn--check {
+  background: var(--surface-3, #2a2a2a);
+  color: var(--text-secondary, #ddd);
+  border: 1px solid var(--border, #333);
+  min-height: 44px;
+  padding: 12px 24px;
+  font-size: 14px;
+}
+.upd-btn--check:hover:not(:disabled) {
+  background: var(--surface-4, #333);
+  border-color: color-mix(in srgb, var(--upd-accent) 40%, var(--border, #333));
+}
+
+/* Спиннер */
+.upd-spinner {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: upd-spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+.upd-spinner--dark {
+  border-color: rgba(0, 0, 0, 0.15);
+  border-top-color: var(--text-secondary, #555);
+}
+
+@keyframes upd-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ══ ОШИБКА ══ */
+.upd-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  background: color-mix(in srgb, #ef4444 9%, var(--surface-2, #1c1c1c));
+  border: 1px solid color-mix(in srgb, #ef4444 22%, transparent);
+  color: #f87171;
+  animation: upd-fadein 0.25s ease;
+}
+
+.upd-error__retry {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f87171;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+}
+.upd-error__retry:hover { opacity: 0.75; }
+
+/* ══ ЧЕЙНДЖЛОГ ══ */
+.upd-changelog {
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
+  max-height: 0;
+  opacity: 0;
+}
+
+.upd-changelog--open {
+  max-height: 600px;
+  opacity: 1;
+}
+
+.upd-changelog__inner {
+  background: var(--surface-2, #1c1c1c);
+  border: 1px solid var(--border, #2a2a2a);
+  border-radius: 14px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: upd-fadein 0.3s ease;
+}
+
+.upd-changelog__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.upd-changelog__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary, #f0f0f0);
+  margin: 0;
+}
+
+.upd-changelog__date {
+  font-size: 12px;
+  color: var(--text-muted, #777);
+  flex-shrink: 0;
+}
+
+.upd-changelog__group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.upd-changelog__group-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.upd-changelog__group-title--feat { color: var(--accent); }
+.upd-changelog__group-title--fix  { color: #4ade80; }
+
+.upd-changelog__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.upd-changelog__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-secondary, #ccc);
+  line-height: 1.55;
+}
+
+.upd-changelog__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.upd-changelog__dot--feat { background: var(--accent); }
+.upd-changelog__dot--fix  { background: #22c55e; }
+
+/* ══ БЛОК НАСТРОЕК ══ */
+.upd-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border, #222);
+}
+
+.upd-settings__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, #666);
+  margin: 0;
+}

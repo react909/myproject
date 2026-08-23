@@ -1,0 +1,30 @@
+[project]
+name = "nurcrm-backend"
+version = "1.0.0"
+description = "Local FastAPI backend for NurCRM desktop deployments."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "aiosqlite>=0.21.0",
+    "alembic>=1.13.0",
+    "fastapi>=0.115.0",
+    "email-validator>=2.2.0",
+    # argon2id — основная схема; bcrypt только для чтения старых хэшей.
+    "passlib[argon2,bcrypt]>=1.7.4",
+    "argon2-cffi>=23.1.0",
+    "psycopg[binary]>=3.2.0",
+    "pydantic-settings>=2.6.0",
+    "pyjwt>=2.10.0",
+    "python-multipart>=0.0.20",
+    "sqlalchemy>=2.0.36",
+    "uvicorn[standard]>=0.34.0",
+]
+
+[project.optional-dependencies]
+build = [
+    "maturin>=1.8.0",
+    "pyinstaller>=6.11.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"

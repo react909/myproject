@@ -1,0 +1,281 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Ряд разделов панели — два ряда, листающихся как единая сетка.
+
+   ЖИВЁТ В ШАПКЕ ПРИЛОЖЕНИЯ, на тёмной полосе. Поэтому цвета берутся из
+   «рельсовых» токенов (--fg-rail, --accent-on-rail), а не из обычных: обычные
+   рассчитаны на светлый холст страницы и на тёмном не читаются.
+
+   Высота посчитана под шапку в 72 px и не может расти:
+       кнопка 28 + промежуток 5 + кнопка 28 = 61
+       указатель 2 + отступ 3                =  5
+                                          итого 66
+   Отсюда и отсутствие вторых строк-подписей на кнопках — с ними кнопка
+   выходит под 45 px, и два ряда в шапку не влезают никакими отступами.
+
+   Вид: торговый терминал. Прямоугольники со скруглением 5 px, плоская
+   заливка, граница в один пиксель, ни теней, ни градиентов. Акцент ровно в
+   двух местах: активный раздел и рамка фокуса клавиатуры.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.psr {
+  --psr-rows: 2;
+  /* Расстояние между кнопками одинаково по обеим осям: разные зазоры
+     превращают сетку в два независимых ряда на вид. */
+  --psr-gap: 5px;
+  --psr-btn-h: 28px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  height: 100%;
+  padding: 0 4px;
+}
+
+/*
+  Сама сетка.
+
+  `grid-auto-flow: column` с двумя строками раскладывает кнопки «змейкой» по
+  столбцам: первая и вторая — первый столбец, третья и четвёртая — второй.
+  Отсюда синхронность рядов — она не поддерживается кодом, а следует из того,
+  что прокручиваемый элемент ОДИН.
+
+  `grid-auto-columns: max-content` — ширина по содержимому. Не `1fr`: равные
+  колонки растянули бы «Смена» до ширины «Добавить товар», а на узком экране,
+  наоборот, сжали бы надписи до нечитаемых.
+
+  `touch-action: pan-x` отдаёт листание пальцем БРАУЗЕРУ: у него своя инерция,
+  отскок у краёв и остановка пальцем на лету. Мышью браузер горизонтальную
+  область не листает, поэтому для неё перенос свой — см. PanelSectionRail.tsx.
+*/
+.psr__grid {
+  display: grid;
+  grid-template-rows: repeat(var(--psr-rows), var(--psr-btn-h));
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  gap: var(--psr-gap);
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  scroll-behavior: smooth;
+  /* Рамка фокуса выходит за кнопку на 2 px и без запаса срезалась бы краем
+     прокручиваемой области. */
+  padding: 2px;
+}
+
+.psr__grid::-webkit-scrollbar { display: none; }
+
+/*
+  Затухание у краёв — знак, что сетка листается.
+
+  Через `mask-image`, а не наложенным градиентом: шапка — градиент, и полоска
+  затухания выделялась бы на нём прямоугольником. Маска гасит содержимое,
+  каким бы ни был фон.
+
+  Классы ставятся по факту прокрутки: у неотлистанного края маски нет, иначе
+  первая кнопка выглядела бы недорисованной с самого начала.
+*/
+.psr__grid--fade-start {
+  mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 100%);
+}
+.psr__grid--fade-end {
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
+}
+.psr__grid--fade-start.psr__grid--fade-end {
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 28px,
+    #000 calc(100% - 28px),
+    transparent 100%
+  );
+}
+
+/*
+  Кнопка раздела: значок и одна строка названия.
+
+  Высота фиксирована строкой сетки (`grid-template-rows`), а не свойством
+  кнопки: так обе строки заведомо одинаковы, даже если в одной кнопке значок
+  чуть выше.
+*/
+.psr__btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 0 11px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg-rail);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  /* Только цвета. Анимировать размеры в листаемой сетке значит дёргать
+     раскладку соседей на каждом наведении. */
+  transition:
+    background 150ms var(--ease, ease-out),
+    border-color 150ms var(--ease, ease-out),
+    color 150ms var(--ease, ease-out);
+  /* Перетаскивание сетки не должно выделять надписи. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Наведение — едва заметная смена фона. Ни подъёма, ни увеличения. */
+.psr__btn:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+/*
+  Фокус клавиатуры — рамка акцентом в два пикселя.
+
+  `:focus-visible`, а не `:focus`: рамка нужна тому, кто пришёл с клавиатуры.
+  После щелчка мышью она читается как «кнопка залипла».
+
+  `outline`, а не `box-shadow`: тень рисуется под соседями в сетке и на стыке
+  кнопок срезалась бы.
+*/
+.psr__btn:focus-visible {
+  outline: 2px solid var(--accent-on-rail);
+  outline-offset: 1px;
+}
+
+/* Активный раздел. Единственное место, кроме фокуса, где есть акцент. */
+.psr__btn--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.psr__btn--on:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/*
+  Значок — тонкий штриховой, цвет берёт от кнопки (`currentColor` в SVG).
+  Поэтому на активном разделе он контрастен заливке, на остальных нейтрален,
+  и отдельного правила для этого не нужно. Цветных значков в системе нет.
+*/
+.psr__icon {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  opacity: 0.8;
+}
+
+.psr__btn--on .psr__icon,
+.psr__btn:hover .psr__icon { opacity: 1; }
+
+.psr__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+  Полоса-указатель положения.
+
+  Ползунок масштабируется по доле видимого и сдвигается по доле прокрученного —
+  обе величины через один `transform`, поэтому движение идёт на композиторе.
+
+  Когда листать нечего, полоса гаснет, а не исчезает: исчезающая меняла бы
+  высоту ряда при каждом изменении ширины окна.
+*/
+.psr__bar {
+  position: relative;
+  height: 2px;
+  margin: 0 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transition: opacity 150ms var(--ease, ease-out);
+}
+
+.psr__bar--idle { opacity: 0; }
+
+.psr__bar-thumb {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: inherit;
+  background: var(--accent-on-rail);
+  opacity: 0.75;
+  /* Точка отсчёта слева: иначе масштаб растягивал бы ползунок от середины, и
+     доля прокрутки перестала бы совпадать с положением. */
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* ── Шапка панели целиком: ряд разделов плюс «Добавить товар» ─────────── */
+
+.pnav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pnav__rail {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/*
+  «Добавить товар» — отдельная кнопка справа от рядов, всегда на виду.
+
+  Не пункт ряда: её нажимают чаще любого раздела, и искать её среди
+  листающихся кнопок значит листать перед каждым новым товаром.
+*/
+.pnav__add {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 150ms var(--ease, ease-out);
+}
+
+.pnav__add:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+.pnav__add:focus-visible {
+  outline: 2px solid var(--accent-on-rail);
+  outline-offset: 2px;
+}
+
+.pnav__add svg { width: 16px; height: 16px; }
+
+/* Подсказка клавиши прямо на кнопке: так о ней узнают, не читая справку. */
+.pnav__key {
+  padding: 1px 5px;
+  border: 1px solid color-mix(in srgb, var(--accent-fg) 35%, transparent);
+  border-radius: 3px;
+  font-family: 'Consolas', 'Menlo', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+/* Узкое окно: подпись клавиши уходит первой — она подсказка, а не смысл. */
+@media (max-width: 1100px) {
+  .pnav__key { display: none; }
+}

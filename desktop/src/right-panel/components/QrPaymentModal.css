@@ -1,0 +1,238 @@
+.qrpay-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 14000;
+  background: rgba(8, 10, 14, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.qrpay-overlay--fullscreen {
+  background: rgba(245, 247, 250, 0.98);
+  padding: 0;
+}
+
+.qrpay-panel {
+  width: min(520px, 100%);
+  max-height: 96vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qrpay-panel--fullscreen {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  height: 100%;
+  border-radius: 0;
+  background: #f8fafc;
+  color: #111827;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(14px, 2.5vh, 28px);
+  gap: clamp(10px, 1.6vh, 18px);
+}
+
+.qrpay-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.qrpay-store {
+  font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin: 0;
+  color: #111827;
+}
+
+.qrpay-sum {
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 900;
+  color: var(--accent-text);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.qrpay-cashier {
+  font-size: clamp(14px, 2vw, 18px);
+  color: #64748b;
+  margin: 0;
+}
+
+.qrpay-hint {
+  font-size: clamp(14px, 2vw, 18px);
+  color: #475569;
+  margin: 0;
+}
+
+.qrpay-frame {
+  margin: 0 auto;
+  padding: clamp(10px, 1.4vw, 16px);
+  background: #fff;
+  border: 3px solid var(--accent);
+  border-radius: 18px;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.16);
+  max-width: min(560px, 86vw);
+  max-height: min(560px, 62vh);
+  display: grid;
+  place-items: center;
+}
+
+.qrpay-img {
+  width: min(500px, 78vw, 58vh);
+  height: min(500px, 78vw, 58vh);
+  display: block;
+  object-fit: contain;
+}
+
+.qrpay-placeholder {
+  width: min(320px, 60vmin);
+  height: min(320px, 60vmin);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f4ed;
+  color: #6b6455;
+  font-size: 15px;
+  padding: 20px;
+}
+
+.qrpay-link {
+  font-size: 11px;
+  color: #64748b;
+  word-break: break-all;
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+.qrpay-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: clamp(8px, 2vh, 20px);
+}
+
+.qrpay-btn {
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: clamp(15px, 2vw, 18px);
+  border: none;
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.qrpay-btn--ghost {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.qrpay-btn--ok {
+  background: #12b76a;
+  color: #fff;
+}
+
+/* --- Выбор банка --------------------------------------------------------- */
+
+.qrpay-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 2vh, 18px);
+}
+
+.qrpay-banks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  width: min(720px, 90vw);
+}
+
+/* Кнопки банков крупные: по ним попадают пальцем при живом покупателе. */
+.qrpay-bank {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  background: #fff;
+  color: #111827;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.qrpay-bank:hover {
+  border-color: var(--accent);
+  background: #fffbf2;
+}
+
+.qrpay-bank strong {
+  font-size: clamp(16px, 2.2vw, 21px);
+  font-weight: 800;
+}
+
+.qrpay-bank small {
+  color: #64748b;
+  font-size: clamp(12px, 1.5vw, 14px);
+}
+
+/* --- Таймер и ошибки ----------------------------------------------------- */
+
+.qrpay-timer {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(20px, 3vw, 32px);
+  font-variant-numeric: tabular-nums;
+  color: #475569;
+}
+
+.qrpay-timer.is-urgent {
+  color: #dc2626;
+  font-weight: 800;
+}
+
+.qrpay-error {
+  margin: 0;
+  padding: 24px;
+  max-width: min(420px, 80vw);
+  color: #dc2626;
+  font-size: clamp(15px, 2vw, 19px);
+  font-weight: 600;
+}
+
+.qrpay-mirror-note {
+  margin: 0;
+  color: #64748b;
+  font-size: clamp(12px, 1.6vw, 15px);
+}
+
+/*
+  Второго монитора нет: показываем экран покупателя полосой сбоку, чтобы
+  моноблок можно было просто развернуть к клиенту.
+*/
+.qrpay-mirror {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(38vw, 520px);
+  border-left: 2px solid rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .qrpay-mirror {
+    display: none;
+  }
+}

@@ -1,0 +1,53 @@
+/*
+  Сборка тестов под встроенный запускальщик Node (`node --test`).
+
+  Отдельный конфиг, а не общий: приложение собирается в ESM для браузера, где
+  импорты без расширения разрешает сборщик. В Node такого сборщика нет, и тот
+  же код в ESM просто не найдёт соседний модуль. Поэтому тесты собираются в
+  CommonJS — require разрешает пути так же, как это делает vite.
+
+  Внешних библиотек для тестов не заводим: node --test встроен, а всё, что
+  здесь проверяется, — чистые функции без DOM.
+*/
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist-test",
+    "rootDir": "src",
+    // node10-разрешение здесь именно то, что нужно: оно ищет соседний модуль
+    // без расширения — ровно как это делает сборщик приложения. Оно объявлено
+    // устаревшим, поэтому глушим предупреждение явным ignoreDeprecations.
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0",
+    "verbatimModuleSyntax": false,
+    "allowImportingTsExtensions": false,
+    "types": ["node"],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
+  "include": [
+    "src/onboarding/phone.ts",
+    "src/onboarding/phone.test.ts",
+    "src/onboarding/logoCanvas.ts",
+    "src/onboarding/logoCanvas.test.ts",
+    "src/onboarding/types.ts",
+    "src/onboarding/headerLayout.test.ts",
+    "src/onboarding/fields.ts",
+    "src/onboarding/brandStep.test.ts",
+    "src/auth/hiddenAccessGate.ts",
+    "src/auth/hiddenAccessGate.test.ts",
+    "src/auth/hiddenAccess.ts",
+    "src/auth/hiddenAccess.test.ts",
+    "src/auth/licenseKey.ts",
+    "src/auth/licenseKey.test.ts",
+    "src/auth/secretShape.ts",
+    "src/auth/secretShape.test.ts",
+    "src/auth/applyTheme.ts",
+    "src/auth/applyTheme.test.ts",
+    "src/brand/resolve.ts",
+    "src/brand/resolve.test.ts",
+    "src/layout/headerShowcase.ts",
+    "src/layout/headerShowcase.test.ts"
+  ]
+}

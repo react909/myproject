@@ -1,0 +1,37 @@
+{
+  "width": 1440,
+  "height": 900,
+  "email": "demo@kassir.kg",
+  "shots": [
+    { "name": "30-header-nav", "route": "/panel?tab=receipts", "settle": 3200 },
+    { "name": "31-add-product", "route": "/panel?tab=add-product", "settle": 3000 },
+    {
+      "name": "32-add-service",
+      "route": "/panel?tab=add-product",
+      "settle": 2800,
+      "script": "(()=>{ [...document.querySelectorAll('.ppg__kind')].find(b=>b.textContent.includes('Услуга'))?.click(); return true })()",
+      "after": 800
+    },
+    {
+      "name": "33-add-bundle",
+      "route": "/panel?tab=add-product",
+      "settle": 2800,
+      "script": "(async()=>{ [...document.querySelectorAll('.ppg__kind')].find(b=>b.textContent.includes('Комплект'))?.click(); await new Promise(r=>setTimeout(r,500)); const inp=document.querySelector('[data-field=\"bundle-search\"]'); if(inp){inp.focus(); const s=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set; s.call(inp,'чай'); inp.dispatchEvent(new Event('input',{bubbles:true}));} return true })()",
+      "after": 2000
+    },
+    {
+      "name": "34-add-extra",
+      "route": "/panel?tab=add-product",
+      "settle": 2800,
+      "script": "(()=>{ document.querySelector('.ppg__more')?.click(); return true })()",
+      "after": 800
+    },
+    {
+      "name": "35-space-opens-form",
+      "route": "/panel?tab=receipts",
+      "settle": 3000,
+      "script": "(()=>{ document.body.focus(); document.dispatchEvent(new KeyboardEvent('keydown',{key:' ',code:'Space',bubbles:true})); window.dispatchEvent(new KeyboardEvent('keydown',{key:' ',code:'Space',bubbles:true})); return true })()",
+      "after": 1600
+    }
+  ]
+}

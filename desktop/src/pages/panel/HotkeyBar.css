@@ -1,0 +1,81 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Полоса подсказок клавиш.
+
+   Высота 26 px, шрифт 11 px, цвет приглушённый — она должна читаться, когда
+   на неё смотрят, и не отвлекать, когда не смотрят. Обозначения клавиш
+   выделены рамкой и моноширинным начертанием: в потоке текста «F4 Провести Ins
+   Добавить» без выделения не разобрать, где клавиша, а где действие.
+
+   Ни теней, ни скруглений у самой полосы: это край экрана, а не карточка.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hkb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 0 0 auto;
+  height: 26px;
+  padding: 0 10px;
+  background: var(--bg-inset);
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--fg-subtle);
+  /* Полоса — не место для выделения текста мышью: её задевают, когда
+     промахиваются мимо последней строки таблицы. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/*
+  Список подсказок.
+
+  Прокручивается вбок, если не помещается, — на узком окне набор из семи клавиш
+  длиннее экрана. Полоса прокрутки скрыта: два пикселя высоты она бы съела
+  целиком.
+*/
+.hkb__list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+.hkb__list::-webkit-scrollbar { display: none; }
+
+.hkb__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+/* Недоступная сейчас подсказка гаснет, но остаётся на своём месте: набор,
+   который скачет при каждом движении по таблице, перестаёт читаться. */
+.hkb__item--off { opacity: 0.4; }
+
+.hkb__key {
+  display: inline-flex;
+  align-items: center;
+  height: 15px;
+  padding: 0 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: var(--bg-surface);
+  font-family: 'Consolas', 'Menlo', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+
+.hkb__action { color: var(--fg-subtle); }
+
+.hkb__status {
+  flex: 0 0 auto;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}

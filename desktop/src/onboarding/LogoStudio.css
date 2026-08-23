@@ -1,0 +1,675 @@
+/* ==========================================================================
+   Редактор логотипа. Все цвета — из theme.css, чтобы выбранная тема и акцент
+   применялись здесь так же, как во всём приложении.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+.ls-studio,
+.ls-studio *,
+.ls-studio *::before,
+.ls-studio *::after {
+  box-sizing: border-box;
+}
+
+.ls-studio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 260px);
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+.ls-studio__main {
+  min-width: 0;
+}
+
+/* --- Вкладки источника -------------------------------------------------- */
+
+.ls-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-inset);
+}
+
+.ls-tab {
+  height: 32px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-sm);
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.ls-tab:hover {
+  color: var(--fg);
+}
+
+.ls-tab.is-active {
+  background: var(--bg-surface);
+  color: var(--fg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- Панели ------------------------------------------------------------- */
+
+.ls-panel {
+  margin-top: var(--sp-5);
+}
+
+.ls-panel--caption {
+  padding-top: var(--sp-5);
+  border-top: var(--border-w) solid var(--border-subtle);
+}
+
+.ls-field-label {
+  display: block;
+  margin-bottom: var(--sp-3);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+}
+
+.ls-panel .ls-field-label:not(:first-child) {
+  margin-top: var(--sp-5);
+}
+
+.ls-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.ls-note {
+  margin: var(--sp-4) 0 0;
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+/* --- Кнопки ------------------------------------------------------------- */
+
+.ls-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--ctl-h-lg);
+  padding: 0 var(--sp-6);
+  border: var(--border-w) solid transparent;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.ls-btn input[type='file'] {
+  display: none;
+}
+
+.ls-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  /* --accent-fg вычисляется под выбранный акцент — именно он не даёт
+     получить белый текст на светлой кнопке. */
+  color: var(--accent-fg);
+}
+
+.ls-btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.ls-btn--ghost {
+  border-color: var(--border);
+  background: var(--bg-surface);
+  color: var(--fg);
+}
+
+.ls-btn--ghost:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.ls-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Шаблоны монограммы ------------------------------------------------- */
+
+.ls-styles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.ls-style {
+  height: 34px;
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.ls-style:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.ls-style.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: var(--fw-semibold);
+}
+
+.ls-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.ls-swatch {
+  width: 34px;
+  height: 34px;
+  border: 2px solid transparent;
+  border-radius: var(--r-sm);
+  box-shadow: inset 0 0 0 1px rgba(16, 21, 29, 0.12);
+  cursor: pointer;
+}
+
+.ls-swatch.is-active {
+  border-color: var(--fg);
+}
+
+/* --- Подпись ------------------------------------------------------------ */
+
+.ls-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  cursor: pointer;
+}
+
+.ls-check input {
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  flex: 0 0 auto;
+}
+
+.ls-check strong {
+  display: block;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+}
+
+.ls-check small {
+  display: block;
+  margin-top: 1px;
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+}
+
+.ls-text-input {
+  width: 100%;
+  height: var(--ctl-h);
+  margin-top: var(--sp-4);
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-13);
+  outline: none;
+}
+
+.ls-text-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+/* --- Предпросмотр ------------------------------------------------------- */
+
+.ls-preview {
+  min-width: 0;
+}
+
+/* Белая «лента» всегда светлая независимо от темы: чек печатается на белом,
+   и предпросмотр обязан это показывать честно. */
+.ls-paper {
+  padding: var(--sp-5) var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: #ffffff;
+  text-align: center;
+}
+
+.ls-paper__logo {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  margin: 0 auto var(--sp-3);
+  display: block;
+}
+
+.ls-paper__caption {
+  margin-bottom: var(--sp-4);
+  color: #000000;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.02em;
+  word-break: break-word;
+}
+
+.ls-paper__line {
+  height: 6px;
+  margin: 5px auto;
+  border-radius: 2px;
+  background: #d7dae0;
+  width: 70%;
+}
+
+.ls-paper__line--wide {
+  width: 90%;
+}
+
+.ls-paper__line--short {
+  width: 45%;
+}
+
+.ls-thermal {
+  margin-top: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: #ffffff;
+  text-align: center;
+}
+
+.ls-thermal img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto var(--sp-3);
+}
+
+.ls-thermal small {
+  display: block;
+  color: #5b6472;
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+/* --- Модалка обрезки ---------------------------------------------------- */
+
+/*
+  Анимации здесь короткие и на выходе замедляющиеся: 160 мс, ease-out.
+  Верхняя граница — 250 мс, и это не вкусовое ограничение. Касса рабочий
+  инструмент: кассир открывает редактор с очередью у прилавка, и каждая
+  задержка кадра — это ожидание живого человека. Длинные плавные переходы
+  уместны на витрине, а не здесь.
+*/
+.ls-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-6);
+  background: var(--bg-overlay);
+  animation: ls-fade 160ms ease-out;
+}
+
+/*
+  Окно обрезки: шапка и подвал закреплены, прокручивается середина.
+
+  Так оно устроено не для красоты. Раньше панель росла по содержимому, и на
+  ноутбучном экране предпросмотр результата выталкивал подвал за нижний край —
+  кнопки «Применить» попросту не было видно, а обрезать без неё нельзя.
+  Теперь высота ограничена экраном, а прокручивается только середина.
+*/
+.ls-modal__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: min(92vh, 860px);
+  border-radius: var(--r-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: ls-rise 180ms ease-out;
+}
+
+/* Середина окна — единственное, что прокручивается. */
+.ls-modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.ls-modal__head,
+.ls-modal__foot {
+  flex: 0 0 auto;
+}
+
+@keyframes ls-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes ls-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Отключённая анимация — тоже требование: системная настройка сильнее нашей. */
+@media (prefers-reduced-motion: reduce) {
+  .ls-modal,
+  .ls-modal__panel {
+    animation: none;
+  }
+}
+
+.ls-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: var(--border-w) solid var(--border);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+}
+
+.ls-icon-btn {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  color: var(--fg-muted);
+  cursor: pointer;
+}
+
+.ls-icon-btn:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.ls-stage {
+  position: relative;
+  height: 320px;
+  background: var(--bg-inset);
+}
+
+.ls-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-4) var(--sp-5);
+  border-top: var(--border-w) solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.ls-slider {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex: 1 1 200px;
+  min-width: 0;
+  font-size: var(--fs-11);
+  color: var(--fg-muted);
+}
+
+.ls-slider input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+}
+
+.ls-slider b {
+  min-width: 46px;
+  text-align: right;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-semibold);
+}
+
+/* Масштаб числом: ползунком не попасть в «ровно 100%», а именно оно нужно
+   чаще всего. Кнопки «−» и «+» — для сенсорного экрана, где тянуть ползунок
+   пальцем точнее чем на 5% не выходит. */
+.ls-zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.ls-zoom__btn {
+  width: 30px;
+  height: 30px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ls-zoom__btn:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.ls-zoom__input {
+  width: 54px;
+  height: 30px;
+  padding: 0 var(--sp-2);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  outline: none;
+}
+
+.ls-zoom__input:focus {
+  border-color: var(--accent);
+}
+
+.ls-zoom__unit {
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+}
+
+/* Действие вроде «Обрезать поля автоматически» — выделено, но не главное. */
+.ls-chip--action {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.ls-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*
+  Предупреждение о нечитаемом QR. Именно предупреждение: код может не
+  распознаться из-за качества снимка, а не из-за обрезки, и запирать человека
+  в редакторе из-за нашей неуверенности нельзя — кнопка рядом работает.
+*/
+.ls-notice {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-5);
+  border-top: var(--border-w) solid var(--warning-border);
+  background: var(--warning-soft);
+  color: var(--warning-text);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+.ls-controls .ls-btn {
+  height: var(--ctl-h);
+  padding: 0 var(--sp-5);
+  font-size: var(--fs-12);
+}
+
+/* --- Пропорции и инструменты обрезки ------------------------------------- */
+
+.ls-aspects,
+.ls-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.ls-chip {
+  height: 32px;
+  padding: 0 var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 160ms ease-out, border-color 160ms ease-out;
+}
+
+.ls-chip:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.ls-chip.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* --- Рамка обрезки ------------------------------------------------------- */
+
+/*
+  Рамка лежит поверх области обрезки библиотеки и повторяет её размер. Ручки
+  ловят указатель сами, всё остальное прозрачно для перетаскивания картинки.
+*/
+.ls-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Отказ показываем в самом блоке: человек смотрит туда, куда нажал. */
+.ls-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+}
+
+/* Круглая обрезка: рамка обязана показывать ровно ту границу, по которой
+   картинка будет обрезана, иначе человек целится не туда. */
+.ls-frame--round {
+  border-radius: var(--r-full, 999px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55) inset;
+}
+
+/*
+  Предпросмотр результата: макет шапки или лента чека прямо в редакторе.
+
+  Высота ограничена намеренно: логотип под ленту 58 мм выходит длинным, и без
+  предела он занимал бы весь экран, отодвигая кнопки. Внутри всё вписывается
+  по высоте, а не обрезается.
+*/
+.ls-result {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-3) var(--sp-5);
+  max-height: 190px;
+  overflow: hidden;
+}
+
+.ls-result img {
+  max-height: 150px;
+  width: auto;
+  object-fit: contain;
+}
+
+.ls-handle {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border: 2px solid var(--accent);
+  border-radius: 3px;
+  pointer-events: auto;
+  touch-action: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.ls-handle--nw { top: -9px; left: -9px; cursor: nwse-resize; }
+.ls-handle--ne { top: -9px; right: -9px; cursor: nesw-resize; }
+.ls-handle--sw { bottom: -9px; left: -9px; cursor: nesw-resize; }
+.ls-handle--se { bottom: -9px; right: -9px; cursor: nwse-resize; }
+
+.ls-handle--n { top: -9px; left: 50%; margin-left: -9px; cursor: ns-resize; }
+.ls-handle--s { bottom: -9px; left: 50%; margin-left: -9px; cursor: ns-resize; }
+.ls-handle--w { left: -9px; top: 50%; margin-top: -9px; cursor: ew-resize; }
+.ls-handle--e { right: -9px; top: 50%; margin-top: -9px; cursor: ew-resize; }
+
+/*
+  Превью шапки живёт рядом со своим компонентом — см. HeaderBrand.css. Копия
+  этих правил была здесь и ещё одна в редакторе бренда: макет шапки рисовался
+  в двух местах слово в слово, и они успели разойтись.
+*/
+
+/* Тумблер показа логотипа стоит над вкладками — это решение «показывать ли
+   вообще», а вкладки уже отвечают на «что именно показывать». */
+.ls-check--switch {
+  margin-bottom: var(--sp-5);
+  padding-bottom: var(--sp-5);
+  border-bottom: var(--border-w) solid var(--border-subtle);
+}
+
+.ls-btn.is-busy {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.ls-modal__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-top: var(--border-w) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+@media (max-width: 900px) {
+  .ls-studio {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

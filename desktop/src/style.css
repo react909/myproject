@@ -1,0 +1,1219 @@
+/* style.css — каркас приложения: шапка, тело, дашборд, общие контролы. */
+
+@import './styles/tokens.css';
+
+/* ═══════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+
+   Цветá акцента отсюда уехали целиком — они в styles/tokens.css, который
+   подключён строкой выше.
+
+   Здесь была янтарная лесенка --amber-300…900: второй источник акцента из
+   трёх. Смена фирменного цвета до неё не доходила — красились ровно две её
+   ступени из семи, — и касса оставалась янтарной, пока мастер и клавиатура
+   уже стояли в новом цвете. Ступеней больше нет, все их места разобраны по
+   ролям: заливка это --accent, подложка --accent-soft, обводка
+   --accent-border, надпись --accent-text.
+
+   Нейтральная лесенка --n-* и её псевдонимы остались: они не акцент, и
+   фирменный цвет их не касается — бумага под элементами своего цвета не
+   меняет.
+   ═══════════════════════════════════════════════════════════════════ */
+
+   :root {
+    --n-0:   #ffffff;
+    --n-50:  #f8fafc;
+    --n-100: #f1f5f9;
+    --n-200: #e2e8f0;
+    --n-300: #cbd5e1;
+    --n-400: #94a3b8;
+    --n-500: #64748b;
+    --n-600: #475569;
+    --n-700: #334155;
+    --n-800: #1e293b;
+    --n-900: #0f172a;
+  
+    /* Семантика — псевдонимы общих токенов, а не свои значения: красный
+       возврата обязан быть тем же красным, что и на всех прочих экранах. */
+    --red:        var(--danger);
+    --red-light:  #fca5a5;
+    --red-bg:     #3b0f0f;
+    --green:      var(--success);
+
+    --surface:   var(--bg-surface);
+    --surface-2: #f8fafc;
+    /* --border здесь не переопределяется: он уже объявлен в tokens.css, и
+       вторая декларация с чуть другим значением — ровно тот случай, когда
+       один и тот же токен на разных экранах выглядит по-разному. */
+    --border-2:  #dee2e6;
+
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.10);
+  
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+  
+    --header-h: 72px;
+  
+    /* Legacy aliases — старые имена, оставленные ради существующих экранов.
+       Своих значений у цветных из них больше нет: --pos-cta и --primary-yellow
+       были ещё двумя способами задать акцент мимо общего источника. */
+    --pos-header-bg:  #2a2a2c;
+    --pos-header-fg:  #e8e8ea;
+    --pos-cta:        var(--accent);
+    --pos-cta-hover:  var(--accent-hover);
+    --text-primary:   var(--n-900);
+    --text-secondary: var(--n-600);
+    --text-tertiary:  var(--n-500);
+    --border-light:   var(--n-200);
+    --border-medium:  var(--n-300);
+    --border-dark:    var(--n-400);
+    --bg-primary:     var(--n-0);
+    --bg-secondary:   var(--n-100);
+    --bg-tertiary:    var(--n-50);
+    --primary-yellow: var(--accent);
+    --yellow-dark:    var(--accent-active);
+
+    color-scheme: light;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      'Helvetica Neue', sans-serif;
+    line-height: 1.45;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     RESET
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  
+  html, body, #app {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  
+  body {
+    min-width: 960px;
+    background: #f3f4f6;
+    color: var(--text-primary);
+  }
+  
+  #app {
+    min-height: 0;
+    min-width: 0;
+  }
+  
+  button, input, select, textarea { font: inherit; -webkit-tap-highlight-color: transparent; }
+  svg { display: block; }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     SCREEN SHELL
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  .screen-shell {
+    width: 100%;
+    min-width: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #f3f4f6;
+  }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     APP HEADER — Graphite, high-contrast icons, Windows-like controls
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  .app-header {
+    flex-shrink: 0;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    min-height: var(--header-h);
+    height: var(--header-h);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 0 0 0 8px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #3a3d42 0%, #2a2c30 48%, #25262a 100%);
+    border-bottom: 1px solid #444444;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.09),
+      0 2px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 100;
+  }
+  
+  .app-header::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 20%,
+      color-mix(in srgb, var(--accent) 55%, transparent) 50%,
+      color-mix(in srgb, var(--accent) 30%, transparent) 80%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+  
+  /* ── LEFT: только бренд + время ── */
+
+  .app-header__left {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.4vw, 16px);
+    flex-shrink: 0;
+    padding-right: clamp(12px, 1.6vw, 18px);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    min-width: 0;
+  }
+
+  /*
+    Возврат на кассу.
+
+    Крупная, с надписью, а не значком: из панели уходят к продажам, и это самое
+    частое действие на этом экране. Значок без слова читается как «отмена» и
+    путается с закрытием окна, а перепутать выход с возвратом на кассе значит
+    закрыть смену посреди дня.
+
+    Не красная и не у правого края — там выход из аккаунта, и эти две кнопки
+    обязаны выглядеть по-разному.
+  */
+  .app-header__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 16px 0 12px;
+    border-radius: var(--r-sm);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .app-header__back svg { width: 17px; height: 17px; }
+
+  .app-header__back:hover {
+    background: var(--accent-soft-strong);
+    border-color: var(--accent);
+  }
+
+  /* ── LEFT: brand + clock ── */
+
+  .app-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  
+  /*
+    Логотип магазина: высота фиксирована, ширина свободная.
+
+    Размер задан переменной, а не числом по месту: он повторяется у блока
+    бренда, у каждой картинки и у пустого состояния (см. HeaderBrand.css), и
+    разъехаться этим значениям нельзя.
+
+    Ориентир теперь высота самой полосы, а не строки текста рядом: название
+    ушло из соседей в сам блок бренда — оно приходит картинкой. 58 из 72
+    оставляют по 7 пикселей сверху и снизу; знак читается через прилавок, а
+    высота шапки от компоновки не зависит.
+
+    Подложки под логотипом нет. Она была, пока обрезка запекала в файл белый
+    фон: край читался как светлый, и шапка добавляла ещё и рамку — получался
+    белый квадрат вокруг круглого знака. Теперь прозрачность настоящая, а
+    файлы «на белом листе» лечатся кнопкой «Убрать белый фон» в редакторе.
+  */
+  .app-header {
+    --app-header-logo-size: 58px;
+    /* Потолок ширины бренда: широкая надпись иначе растянула бы левый блок и
+       сдвинула плитки «К оплате» к краю окна. */
+    --hbrand-max-width: clamp(160px, 24vw, 340px);
+    /*
+      Отделение знака от полосы шапки — по альфа-каналу, а не прямоугольником.
+
+      Полоса шапки тёмная в обеих темах (см. градиент выше), поэтому сливается
+      только тёмный логотип. Прежнее решение — белая плашка под ним — и было
+      тем самым «белым квадратом»: она рисовалась по границам картинки, а не по
+      контуру знака. `drop-shadow` идёт по прозрачности: у круглого знака ореол
+      круглый, у надписи — по буквам.
+
+      Два слоя. Светлый в один пиксель отделяет тёмный знак от тёмного фона; на
+      светлом логотипе он не виден вовсе. Тёмный мягкий добавляет глубины
+      светлому знаку и не заметен на тёмном.
+    */
+    --app-header-logo-halo:
+      drop-shadow(0 0 1px rgba(255, 255, 255, 0.5))
+      drop-shadow(0 1px 4px rgba(0, 0, 0, 0.35));
+  }
+
+  /*
+    Сам блок бренда — знак, надпись и их компоновка — живёт в HeaderBrand.css
+    рядом с компонентом: он показывается не только здесь, но и в трёх
+    предпросмотрах редакторов, и две копии его правил однажды разойдутся.
+    Шапка задаёт только размеры выше.
+  */
+
+  /*
+    Кольцо удержания. Обводит блок логотипа по контуру, поэтому одинаково
+    работает и с квадратным знаком, и с широкой надписью.
+  */
+  .app-header__hold-ring {
+    position: absolute;
+    inset: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .app-header__hold-ring rect {
+    fill: none;
+    /* Кольцо удержания — акцентом: это индикатор системы, а не декор. */
+    stroke: var(--accent-on-rail);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  /* Рядом с брендом остались одни часы: название переехало в сам блок бренда,
+     потому что приходит картинкой и стоит с знаком по выбранной компоновке. */
+  .app-header__brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex-shrink: 0;
+  }
+
+  /*
+    Часы принимают на себя запасной взвод скрытого входа (пять быстрых тапов),
+    поэтому выделение текста и системное меню по долгому нажатию здесь
+    выключены: иначе серия тапов подсвечивала бы цифры и вызывала «Копировать».
+    Часы при этом остаются часами — курсор обычный, никакой реакции на нажатие.
+  */
+  .app-header__clock-mono {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+  }
+
+  .app-header__clock-mono {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Segoe UI', 'SF Mono', 'Consolas', ui-monospace, monospace;
+    letter-spacing: 0.02em;
+    color: #f8fafc;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  }
+  
+  /*
+    Середина шапки, когда её занял экран (см. headerMode).
+
+    `min-width: 0` — не оформление, а исправление найденной ошибки. Середина
+    стоит в колонке `1fr` грид-раскладки шапки, а `1fr` это `minmax(auto, 1fr)`:
+    автоматический минимум равен ширине СОДЕРЖИМОГО. Пока правила не было,
+    широкий ряд разделов не листался, а РАСПИРАЛ шапку — колонка росла под
+    него, выталкивая кнопки окна за край экрана. Замечено замером: у ряда
+    `scrollWidth` всегда равнялся `clientWidth`, то есть прокручиваться ему
+    было нечего.
+
+    `overflow: hidden` держит внутри то, что не поместилось: прокрутку делает
+    сам ряд, и наружу она вылезать не должна.
+  */
+  .app-header__center {
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ── CENTER: витрина вес + к оплате (для моноблока / покупателя) ── */
+
+  .app-header__showcase {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 1.5vw, 20px);
+    min-width: 0;
+    flex: 1;
+    height: 100%;
+    max-height: var(--header-h);
+    padding: 0 clamp(4px, 1vw, 10px);
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .app-header__showcase-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    gap: 0;
+    padding: 3px 10px 4px;
+    max-height: calc(var(--header-h) - 6px);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+  }
+  
+  .app-header__showcase-tile--pay {
+    flex: 1 1 auto;
+    max-width: min(440px, 44vw);
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .app-header__showcase-value--empty {
+    color: #64748b;
+    letter-spacing: 0.08em;
+  }
+
+  .app-header__showcase-value--live-on {
+    color: #7dd3fc;
+    transition: color 0.15s ease;
+  }
+
+  /* Вес устоялся — зелёным. Семантика, а не оформление: этот цвет не меняется
+     вместе с фирменным, иначе «взвешено» и «выбрано» стали бы одним цветом. */
+  .app-header__showcase-tile--stable {
+    border-color: color-mix(in srgb, var(--success-rail) 45%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--success-rail) 15%, transparent);
+  }
+
+  .app-header__showcase-tile--weight {
+    pointer-events: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 12px 7px;
+    max-width: min(260px, 34vw);
+  }
+
+  .app-header__showcase-tile--weight .app-header__showcase-label {
+    align-self: center;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .app-header__weight-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .app-header__fix-weight {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
+    color: #e2e8f0;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  .app-header__fix-weight:hover:not(:disabled) {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+  }
+
+  .app-header__fix-weight:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .app-header__fix-weight--ready {
+    border-color: color-mix(in srgb, var(--success-rail) 55%, transparent);
+    background: color-mix(in srgb, var(--success-rail) 18%, transparent);
+    color: color-mix(in srgb, var(--success-rail) 55%, #ffffff);
+  }
+
+  .app-header__fix-weight--ready:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--success-rail) 70%, transparent);
+    background: color-mix(in srgb, var(--success-rail) 28%, transparent);
+  }
+  
+  .app-header__showcase-label {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #cbd5e1;
+    line-height: 1;
+    user-select: none;
+    margin-bottom: 3px;
+  }
+  
+  .app-header__showcase-value {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  
+  .app-header__showcase-value--kg {
+    font-size: clamp(15px, 2vw, 22px);
+    color: #f1f5f9;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    text-align: center;
+    line-height: 1.05;
+  }
+  
+  /* К оплате: главная цифра смены — акцентом. Читаемую на тёмной полосе
+     версию фирменного цвета подбирает applyTheme, см. --accent-on-rail. */
+  .app-header__showcase-value--rub {
+    font-size: clamp(19px, 2.5vw, 30px);
+    color: var(--accent-on-rail);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* ── RIGHT: cashier chip + action btns + window controls ── */
+
+  .app-header__right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    height: 100%;
+    min-width: 0;
+  }
+  
+  /* Cashier chip */
+  .cashier-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--r-sm);
+  }
+  
+  .cashier-chip__avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background: #1e1f22;
+    border: 1px solid var(--accent-border);
+    color: var(--accent-on-rail);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+  
+  .cashier-chip__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .cashier-chip__name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #f1f5f9;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  
+  .cashier-chip__sub {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  
+  /* Vertical separator */
+  .header-sep {
+    width: 1px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    margin: 0 8px 0 6px;
+  }
+  
+  /* Настройки + Выход + кнопки окна: воздух между зонами */
+  .header-tray {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    height: 100%;
+    min-height: var(--header-h);
+  }
+  
+  /* Action buttons group */
+  .header-btns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Base button */
+  .header-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-sm);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 90ms ease, color 90ms ease, border-color 90ms ease;
+  }
+  
+  .header-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .header-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border-color: var(--accent-border);
+  }
+  
+  .header-btn:active {
+    background: rgba(255, 255, 255, 0.16);
+  }
+  
+  .header-btn--panel {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--accent-on-rail);
+  }
+
+  .header-btn--panel:hover {
+    background: var(--accent-soft-strong);
+    border-color: color-mix(in srgb, var(--accent) 58%, transparent);
+    color: var(--accent-on-rail);
+  }
+
+  /* Logout */
+  .header-btn--logout {
+    background: color-mix(in srgb, var(--danger) 15%, transparent);
+    border-color: color-mix(in srgb, var(--danger-rail) 35%, transparent);
+    color: #ffffff;
+  }
+  
+  .header-btn--notify {
+    position: relative;
+  }
+
+  .header-btn__badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 99px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 16px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .header-btn--logout:hover {
+    background: color-mix(in srgb, var(--danger) 28%, transparent);
+    color: #ffffff;
+    border-color: color-mix(in srgb, var(--danger-rail) 55%, transparent);
+  }
+  
+  /* ── WINDOW CONTROLS ── */
+  
+  /*
+    Кнопки окна стоят вплотную к правому краю — как в любом оконном
+    приложении. Своего отступа справа у группы нет и быть не должно: окно
+    безрамочное, и этот край и есть край экрана.
+  */
+  .window-controls {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    min-height: var(--header-h);
+    margin-left: 0;
+    padding-left: 4px;
+    padding-right: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+  }
+
+  /*
+    Размер — под палец, а не под курсор.
+
+    Нижняя граница области нажатия 44×44: это порог, ниже которого попадание
+    пальцем на сенсорном моноблоке перестаёт быть надёжным. Здесь с запасом —
+    52 в ширину на всю высоту полосы, — и запас указан явными min-*, чтобы
+    случайная правка высоты шапки не увела кнопки под порог незаметно.
+
+    Иконка при этом остаётся некрупной: увеличивать надо зону попадания, а не
+    рисунок. 18 точек — чтобы крестик читался с расстояния вытянутой руки, на
+    котором стоит кассир у прилавка.
+  */
+  .wctrl-btn {
+    width: 52px;
+    min-width: 44px;
+    min-height: max(44px, var(--header-h));
+    height: var(--header-h);
+    max-height: var(--header-h);
+    border: none;
+    background: transparent;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background 90ms ease, color 90ms ease;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
+  .wctrl-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Minimize */
+  .wctrl-btn--minimize {
+    color: #ffffff;
+  }
+  
+  .wctrl-btn--minimize:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+  
+  /* Fullscreen toggle */
+  .wctrl-btn--fullscreen {
+    color: #ffffff;
+  }
+  
+  .wctrl-btn--fullscreen:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+  
+  .wctrl-btn--fullscreen.is-active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  /*
+    Наведение: красным подсвечивается только закрытие.
+
+    Свернуть и полный экран — обратимые действия, им хватает нейтральной
+    подсветки (см. выше). Закрытие кассы посреди смены обратимым не назовёшь,
+    и цвет здесь — последнее предупреждение перед нажатием.
+  */
+  .wctrl-btn--close {
+    color: #ffffff;
+    border-radius: 0;
+  }
+  
+  .wctrl-btn--close:hover {
+    background: #c0392b;
+    color: #ffffff;
+  }
+  
+  .wctrl-btn--close:active {
+    background: #96281b;
+  }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     SCREEN CONTENT
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  /*
+    Тело каркаса под общей шапкой.
+
+    Высоту делит с шапкой, а не отсчитывает от окна. Это и есть то место, где
+    страница перестаёт быть «во весь экран»: пока экраны мерили себя в 100vh,
+    добавленная сверху шапка выталкивала их низ за нижний край окна.
+
+    Прокрутка здесь, потому что страниц два рода. Касса, панель и настройки
+    держат свою высоту сами и прокручивают внутренние области — им это правило
+    ничего не меняет, полосы прокрутки у тела не появится. Отчёты и журнал
+    чеков растут вниз — они прокручиваются здесь, не задевая шапку.
+  */
+  .app-shell__body {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Узкая полоса, как у списков в каталоге и в панели: широкая системная
+       отъедала бы у длинных отчётов заметную колонку и дёргала их раскладку
+       при появлении. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+
+  .app-shell__body::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .app-shell__body::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 3px;
+  }
+
+  /* Под курсором ползунок берёт фирменный цвет — тот же приём, что у полос
+     прокрутки в каталоге и в панели. */
+  .app-shell__body::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+
+  .screen-content {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    /* боковые 8px дали бы серую полосу (фон .screen-shell) слева и справа — убраны */
+    padding: 8px 0 8px 0;
+    overflow: hidden;
+    position: relative;
+    /* Модалки кассы (fixed) должны перекрывать шапку с z-index: 100 */
+    z-index: 110;
+  }
+  
+  .main-workspace {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .main-workspace > .dashboard-screen {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     DASHBOARD — быстрые действия (полоска под шапкой)
+     ═══════════════════════════════════════════════════════════════════ */
+
+  .dashboard-quick-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid var(--border-2, #dee2e6);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .dashboard-quick-actions__label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--n-500, #64748b);
+    margin-right: 6px;
+  }
+
+  .dashboard-quick-actions button {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border-2, #dee2e6);
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--n-700, #334155);
+    cursor: pointer;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease,
+      transform 0.12s ease;
+  }
+
+  .dashboard-quick-actions button:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    transform: translateY(-1px);
+  }
+
+  .dashboard-quick-actions button:active {
+    transform: translateY(0);
+  }
+
+  .dashboard-quick-actions button.dqa--danger {
+    border-color: var(--danger-border);
+    background: var(--danger-soft);
+    color: var(--danger-hover);
+  }
+
+  .dashboard-quick-actions button.dqa--danger:hover {
+    border-color: color-mix(in srgb, var(--danger) 55%, transparent);
+    background: var(--danger-soft-strong);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     DASHBOARD
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  .dashboard-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+  }
+  
+  .dashboard-screen > * {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+  }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     DASHBOARD GRID — двух-колоночный макет POS
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  .dashboard-grid {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 0;
+    min-width: 0;
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    gap: 0;
+  }
+  
+  /* Левая колонка — Каталог */
+  .catalog-aside {
+    flex-shrink: 0;
+    flex-grow: 0;
+    min-width: 260px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  /* Сплиттер — широкая зона для пальца на сенсорном моноблоке */
+  .dashboard-splitter {
+    flex: 0 0 28px;
+    width: 28px;
+    margin: 0;
+    cursor: col-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    border-radius: 8px;
+    background: transparent;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 130ms ease;
+    flex-shrink: 0;
+  }
+  
+  .dashboard-splitter:hover,
+  .dashboard-splitter:focus-visible {
+    background: var(--accent-soft);
+    outline: none;
+  }
+  
+  .dashboard-splitter-grip {
+    width: 6px;
+    min-height: 72px;
+    border-radius: 3px;
+    background: #cbd5e1;
+    transition: background 130ms ease;
+  }
+  
+  .dashboard-splitter:hover .dashboard-splitter-grip,
+  .dashboard-splitter:focus-visible .dashboard-splitter-grip {
+    background: var(--accent);
+  }
+  
+  /* Правая колонка — Чек */
+  .sale-panel-flex {
+    flex: 1;
+    min-width: 320px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     STATUS BAR
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  .bottom-message {
+    flex-shrink: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    font-size: 11px;
+    color: #6b7280;
+    font-weight: 500;
+    animation: msg-in 0.22s ease;
+  }
+  
+  @keyframes msg-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     CONFIRM MODAL
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  .confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,10,18,0.62);
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    display: grid;
+    place-items: center;
+    z-index: 500;
+    padding: 20px;
+  }
+  
+  .confirm-card {
+    width: 100%;
+    max-width: 340px;
+    background: #ffffff;
+    border-radius: var(--r-lg);
+    padding: 22px 22px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.9) inset,
+      0 0 0 1px rgba(0,0,0,0.07),
+      0 24px 60px rgba(0,0,0,0.28);
+  }
+  
+  .confirm-card__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f1113;
+  }
+  
+  .confirm-card__message {
+    margin: 0;
+    font-size: 12.5px;
+    color: #495057;
+    line-height: 1.55;
+  }
+  
+  .confirm-card__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  
+  .confirm-card__cancel {
+    height: 40px;
+    border-radius: var(--r-sm);
+    border: 1px solid #e9ecef;
+    background: #f8f9fa;
+    color: #495057;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 90ms ease, transform 80ms ease;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset;
+  }
+  
+  .confirm-card__cancel:hover  { background: #f1f3f5; }
+  .confirm-card__cancel:active { transform: scale(0.97); }
+  
+  .confirm-card__confirm {
+    height: 40px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--accent-active);
+    background: linear-gradient(150deg, var(--accent) 0%, var(--accent-active) 100%);
+    /* Не белый: на светлом акценте белая надпись пропадает. Чёрный или белый
+       здесь выбирает applyTheme по яркости выбранного цвета. */
+    color: var(--accent-fg);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 3px 10px var(--accent-shadow);
+    transition: box-shadow 90ms ease, transform 80ms ease;
+  }
+
+  .confirm-card__confirm:hover  { box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 5px 16px var(--accent-shadow-strong); transform: translateY(-1px); }
+  .confirm-card__confirm:active { transform: scale(0.97); }
+  
+  .confirm-card__confirm--danger {
+    border-color: var(--red-light);
+    background: linear-gradient(150deg, var(--danger-rail) 0%, var(--danger) 100%);
+    color: var(--danger-fg);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset,
+      0 3px 10px color-mix(in srgb, var(--danger) 25%, transparent);
+  }
+
+  .confirm-card__confirm--danger:hover {
+    box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset,
+      0 5px 16px color-mix(in srgb, var(--danger) 38%, transparent);
+  }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     LEGACY CLASSES — не удаляем, используются компонентами
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  .field { position: relative; display: grid; gap: 8px; }
+  .field span:last-of-type { font-size: 20px; font-weight: 600; color: var(--text-primary); }
+  .field-icon { position: absolute; left: 16px; top: 46px; width: 22px; height: 22px; color: var(--text-primary); opacity: 0.7; pointer-events: none; }
+  .field input, .field select { width: 100%; min-height: 64px; height: 64px; border: 1px solid #e4e4e4; border-radius: 12px; background: var(--bg-primary); padding: 0 18px 0 50px; font-size: 22px; color: var(--text-primary); }
+  .field input::placeholder { color: #919191; }
+  .field input:focus, .field select:focus { outline: 2px solid var(--accent-ring); border-color: var(--accent); }
+  .compact-field input { min-height: 58px; height: 58px; font-size: 20px; }
+  .compact-field .field-icon { top: 42px; }
+  
+  .hero-button { min-width: 200px; min-height: 72px; width: min(320px,100%); justify-self: center; border: none; border-radius: 12px; background: var(--primary-yellow); color: var(--text-primary); font-size: 24px; font-weight: 800; cursor: pointer; transition: transform 0.14s ease, box-shadow 0.14s ease; }
+  .hero-button:hover  { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .hero-button:active { transform: scale(0.985); }
+  .hero-button:disabled { cursor: not-allowed; opacity: 0.72; transform: none; }
+  
+  .secondary-button { min-height: 48px; padding: 10px 14px; border: 1px solid var(--border-medium); border-radius: 10px; background: var(--bg-primary); color: var(--text-primary); font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.14s ease; }
+  .secondary-button:hover { border-color: var(--primary-yellow); transform: translateY(-1px); }
+  
+  .logout-button { min-width: 120px; min-height: 52px; padding: 12px 18px; border: 1px solid var(--border-dark); border-radius: 10px; background: var(--bg-primary); color: var(--text-primary); font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.14s ease; }
+  .logout-button:hover { transform: translateY(-1px); }
+  
+  .entry-panel, .recent-panel { border-radius: 12px; border: 1px solid var(--border-light); background: var(--bg-primary); }
+  .shift-bar { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 16px 18px; border-radius: 12px; border: 1px solid var(--border-light); background: var(--bg-primary); box-shadow: var(--shadow-sm); position: relative; }
+  .shift-bar::before { content:''; position:absolute; inset:0 0 auto 0; height:4px; border-radius:12px 12px 0 0; background:linear-gradient(90deg,var(--accent) 0%,var(--accent-soft-strong) 100%); }
+
+  .top-strip { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border); flex-shrink:0; }
+  .header-brand { display:flex; align-items:center; gap:10px; }
+  .header-logo { width:44px; height:44px; object-fit:contain; }
+  
+  .inline-editor, .weight-editor, .row-actions { display:flex; align-items:center; gap:8px; }
+  .inline-editor button, .weight-editor button, .row-actions button { min-width:44px; min-height:44px; border:1px solid var(--border-dark); border-radius:10px; background:var(--bg-primary); cursor:pointer; font-weight:600; transition:all 0.14s ease; }
+  
+  .orders-table-wrap { overflow:auto; padding:0 18px 18px; }
+  .orders-table { width:100%; border-collapse:collapse; min-width:900px; }
+  .orders-table th, .orders-table td { text-align:left; padding:14px 12px; border-bottom:1px solid #efefef; font-size:17px; color:var(--text-primary); vertical-align:middle; }
+  .orders-table th { font-size:15px; font-weight:700; color:#6a6a6a; text-transform:uppercase; letter-spacing:0.04em; }
+  .orders-table thead tr { background:var(--bg-subtle); }
+  
+  .summary-panel, .recent-panel, .sale-panel > .order-tiles { border-radius:12px; border:1px solid var(--border-light); background:var(--bg-primary); box-shadow:var(--shadow-sm); }
+  .recent-panel { display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+  .recent-header { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:26px 28px 18px; }
+  .recent-header span { font-size:20px; color:var(--text-secondary); }
+  .recent-panel .recent-header h2 { margin:0; font-size:clamp(28px,2.2vw,36px); line-height:1.08; color:var(--text-primary); }
+  .recent-empty { margin:0 22px 24px; padding:36px 28px; border-radius:12px; background:#fcfcfc; border:1px solid #efefef; font-size:20px; line-height:1.45; color:#6a6a6a; }
+  
+  .sale-panel { display:grid; grid-template-rows:auto auto 1fr auto; gap:14px; min-height:0; }
+  
+  @keyframes spin { to { transform:rotate(360deg); } }
+  
+  /* ═══════════════════════════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════════════════════════ */
+  
+  @media (max-width: 1100px) {
+    .cashier-chip__info { display: none; }
+    .cashier-chip { padding: 3px; }
+    /* Служебная подпись уходит первой: она не бренд магазина, а плитки «К
+       оплате» и «Вес» кассиру нужнее. Сам бренд не прячем — он сжимается по
+       ширине, а высота у него своя и не меняется. */
+    .hbrand__system { display: none; }
+    .app-header { --hbrand-max-width: clamp(120px, 20vw, 220px); }
+  }
+  
+  @media (max-width: 760px) {
+    .dashboard-grid { flex-direction: column; }
+    .catalog-aside  { flex: none !important; height: 50%; }
+    .sale-panel-flex { flex: 1; min-width: unset; }
+    .dashboard-splitter { display: none; }
+  }
+  
+  /*
+    Резерва под полосу прокрутки у документа здесь больше нет.
+
+    Было: `@supports (scrollbar-gutter: stable) { html { scrollbar-gutter: stable } }`.
+    Смысл у правила — не дать странице дёрнуться, когда появляется полоса
+    прокрутки. Но у `html` тут же стоит `overflow: hidden` (см. блок RESET), и
+    прокрутки на документе не бывает никогда — резервировать было не подо что.
+
+    Стоило это дорого и заметно: браузер откладывал у правого края окна
+    примерно 15 точек, которые нельзя ни занять, ни прокрутить. В этой полосе
+    виден фон холста — светлый `#f3f4f6` от `body`, — и рядом с тёмной шапкой
+    он читался как «серая полоска» у самого края, а шапка не доходила до края
+    окна. Кнопки управления окном упирались не в край, а в эту полосу.
+
+    Прокрутка живёт внутри — у тела каркаса (.app-shell__body) и у списков; там
+    полосы узкие и стилизованные, дёргать раскладку им нечем.
+  */
+  
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }

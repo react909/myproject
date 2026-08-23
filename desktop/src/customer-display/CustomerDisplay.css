@@ -1,0 +1,265 @@
+/* ==========================================================================
+   Экран покупателя. Читается через прилавок стоя — размеры здесь намеренно
+   вне общей шкалы интерфейса кассы.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+.cd {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-canvas);
+  color: var(--fg);
+  font-family: inherit;
+  user-select: none;
+}
+
+.cd__center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.5vh, 20px);
+  padding: 4vh 4vw;
+  text-align: center;
+}
+
+.cd__caption {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: clamp(18px, 3vh, 34px);
+}
+
+.cd__amount {
+  margin: 0;
+  font-size: clamp(44px, 9vh, 108px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.cd__hint {
+  margin: 0;
+  max-width: 22ch;
+  color: var(--fg-muted);
+  font-size: clamp(14px, 2.2vh, 26px);
+  line-height: 1.35;
+}
+
+.cd__error {
+  margin: 0;
+  color: var(--danger);
+  font-size: clamp(18px, 3vh, 32px);
+  font-weight: 600;
+}
+
+/* --- Ожидание ------------------------------------------------------------ */
+
+.cd__idle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 3vh, 40px);
+}
+
+.cd__logo {
+  max-width: 46vw;
+  max-height: 40vh;
+  object-fit: contain;
+}
+
+.cd__logo-text {
+  font-size: clamp(32px, 7vh, 84px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+  padding: 0 6vw;
+}
+
+.cd__welcome {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: clamp(16px, 2.6vh, 30px);
+}
+
+/* --- Корзина ------------------------------------------------------------- */
+
+.cd__cart {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.cd__head {
+  display: flex;
+  justify-content: space-between;
+  padding: 2vh 3vw;
+  border-bottom: var(--border-w) solid var(--border);
+  color: var(--fg-muted);
+  font-size: clamp(14px, 2vh, 24px);
+}
+
+.cd__lines {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 1vh 3vw;
+  list-style: none;
+}
+
+.cd__line {
+  padding: 1.2vh 0;
+  border-bottom: var(--border-w) solid var(--border-subtle);
+}
+
+.cd__line-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 2vw;
+  font-size: clamp(17px, 2.8vh, 32px);
+  font-weight: 600;
+}
+
+.cd__line-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cd__line-total {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.cd__line-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.4vh;
+  color: var(--fg-muted);
+  font-size: clamp(13px, 1.9vh, 22px);
+  font-variant-numeric: tabular-nums;
+}
+
+.cd__line-discount {
+  color: var(--success);
+}
+
+.cd__totals {
+  padding: 2vh 3vw;
+  border-top: 2px solid var(--border-strong);
+  background: var(--bg-surface);
+}
+
+.cd__discount {
+  display: flex;
+  justify-content: space-between;
+  color: var(--success);
+  font-size: clamp(15px, 2.2vh, 26px);
+}
+
+.cd__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 0.6vh;
+  font-size: clamp(20px, 3.4vh, 40px);
+}
+
+.cd__total strong {
+  font-size: clamp(30px, 6vh, 72px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* --- Способы оплаты ------------------------------------------------------ */
+
+.cd__methods {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5vh 2vw;
+  margin: 1vh 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cd__methods li {
+  padding: 1.2vh 3vw;
+  border: 2px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: clamp(16px, 2.4vh, 28px);
+  font-weight: 600;
+}
+
+/* --- QR ------------------------------------------------------------------ */
+
+.cd__qr {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.4vh, 18px);
+  padding: 3vh 4vw;
+  text-align: center;
+}
+
+.cd__provider {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: clamp(16px, 2.6vh, 30px);
+  font-weight: 600;
+}
+
+/* Белый фон под кодом обязателен: на тёмной теме QR иначе не считывается. */
+.cd__qr-frame {
+  display: grid;
+  place-items: center;
+  padding: clamp(8px, 1.6vh, 20px);
+  border-radius: var(--r-md);
+  background: #ffffff;
+}
+
+.cd__qr-frame img,
+.cd__qr-svg svg {
+  display: block;
+  width: min(46vh, 62vw);
+  height: min(46vh, 62vw);
+}
+
+.cd__timer {
+  margin: 0;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: clamp(20px, 3.4vh, 40px);
+  font-variant-numeric: tabular-nums;
+}
+
+.cd__timer.is-urgent {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* --- Оплачено ------------------------------------------------------------ */
+
+.cd__center--ok .cd__caption {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.cd__check svg {
+  width: clamp(72px, 16vh, 180px);
+  height: clamp(72px, 16vh, 180px);
+  stroke: var(--success);
+}

@@ -1,0 +1,480 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Страница «Добавить товар».
+
+   Плотно и в несколько колонок. Форма должна помещаться на экран моноблока
+   целиком: пролистывать её при вводе двадцатого товара подряд — это двадцать
+   лишних прокруток, и именно на них работу с клавиатуры бросают.
+
+   Сетка на 12 колонок. Короткие поля (цены, количество, наценка, срок) берут
+   по две — то есть шесть полей в строку; длинные (название) — шесть.
+
+   Общие детали — кнопки, поля, метки, полоса подсказок — в deskCommon.css.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.ppg {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 10px;
+  min-height: 0;
+}
+
+.ppg__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.ppg__form::-webkit-scrollbar { width: 6px; }
+.ppg__form::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+/* ── Вид позиции ─────────────────────────────────────────────────────── */
+
+/*
+  Три кнопки в ряд, а не выпадающий список: выбор виден целиком, и от него
+  зависит половина формы. В списке этот выбор пришлось бы сначала открыть.
+*/
+.ppg__kinds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.ppg__kind {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease, ease-out),
+    border-color 150ms var(--ease, ease-out),
+    color 150ms var(--ease, ease-out);
+}
+
+.ppg__kind:hover { background: var(--bg-hover); color: var(--fg); }
+
+.ppg__kind:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.ppg__kind--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.ppg__kind-label { font-size: 13px; font-weight: 700; }
+
+.ppg__kind-hint {
+  font-size: 10.5px;
+  line-height: 1.2;
+  color: var(--fg-subtle);
+}
+
+.ppg__kind--on .ppg__kind-hint {
+  color: color-mix(in srgb, var(--accent-fg) 72%, transparent);
+}
+
+/* ── Сетка полей ─────────────────────────────────────────────────────── */
+
+.ppg__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+}
+
+.ppg__col-2 { grid-column: span 2; }
+.ppg__col-3 { grid-column: span 3; }
+.ppg__col-4 { grid-column: span 4; }
+.ppg__col-6 { grid-column: span 6; }
+.ppg__col-9 { grid-column: span 9; }
+
+/* На узком экране колонки укрупняются, но форма не превращается в ленту. */
+@media (max-width: 1180px) {
+  .ppg { grid-template-columns: minmax(0, 1fr); }
+  .ppg__recent { display: none; }
+  .ppg__col-2 { grid-column: span 3; }
+  .ppg__col-4 { grid-column: span 6; }
+  .ppg__col-6 { grid-column: span 12; }
+  .ppg__col-9 { grid-column: span 12; }
+}
+
+/*
+  Место под сообщение зарезервировано: без этого появление подсказки под полем
+  сдвигает всё, что ниже, и форма прыгает прямо под руками.
+*/
+.dsk__label { position: relative; }
+
+.ppg__aside,
+.ppg__dup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  font-size: 10.5px;
+  line-height: 1.1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.ppg__aside { color: var(--fg-subtle); }
+.ppg__dup { color: var(--danger-text); font-weight: 600; }
+
+/* Поле со встроенной кнопкой: штрихкод и «Сгенерировать». */
+.ppg__with-btn {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ppg__with-btn .dsk__field { flex: 1 1 auto; min-width: 0; }
+
+.ppg__gen {
+  flex: 0 0 auto;
+  height: 30px;
+  padding: 0 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.ppg__area {
+  height: auto;
+  padding: 6px 8px;
+  line-height: 1.35;
+  resize: vertical;
+}
+
+/* ── Дополнительно ───────────────────────────────────────────────────── */
+
+.ppg__more {
+  align-self: flex-start;
+  padding: 5px 0;
+  border: none;
+  background: none;
+  color: var(--accent-text);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ppg__more:hover { text-decoration: underline; }
+.ppg__more:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Предупреждение ──────────────────────────────────────────────────── */
+
+/*
+  Предупреждение, а не ошибка: продажа ниже закупки бывает осознанной
+  (распродажа, товар с истекающим сроком). Жёлтое, а не красное, и ничего не
+  запрещает.
+*/
+.ppg__warn {
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--warning-border);
+  border-radius: 4px;
+  background: var(--warning-soft);
+  color: var(--warning-text);
+  font-size: 12px;
+}
+
+.ppg__actions {
+  position: sticky;
+  bottom: 0;
+  padding: 8px 0 2px;
+  background: var(--bg-canvas);
+}
+
+.ppg__timing {
+  font-size: 11px;
+  color: var(--fg-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Заведённое в этом сеансе ────────────────────────────────────────── */
+
+.ppg__recent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  overflow-y: auto;
+}
+
+.ppg__recent-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.ppg__recent-empty {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--fg-subtle);
+}
+
+.ppg__recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ppg__recent-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 12px;
+}
+
+.ppg__recent-row:last-child { border-bottom: none; }
+
+/* ── Фото и видео ────────────────────────────────────────────────────── */
+
+.pmb__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pmb__file { display: none; }
+
+/*
+  Плитка 92×92. Больше не нужно: это предпросмотр, а не просмотр — оригинал
+  открывается по нажатию, и место на форме дороже.
+*/
+.pmb__slot {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+
+.pmb__slot--dragging { opacity: 0.5; }
+.pmb__slot--bad { border-color: var(--danger-border); background: var(--danger-soft); }
+.pmb__slot--video { width: 132px; }
+
+.pmb__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pmb__busy {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--bg-inset), var(--bg-hover), var(--bg-inset));
+  background-size: 200% 100%;
+  animation: dsk-shimmer 1200ms linear infinite;
+}
+
+.pmb__error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--danger-text);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Первое фото — главное: именно оно попадает на витрину кассы. */
+.pmb__main {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 1px 6px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/*
+  Кнопки порядка и удаления. Видны при наведении и ВСЕГДА при фокусе
+  клавиатуры: иначе до них нельзя дойти Tab'ом, не видя, где находишься.
+*/
+.pmb__tools {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 150ms var(--ease, ease-out);
+}
+
+.pmb__slot:hover .pmb__tools,
+.pmb__tools:focus-within { opacity: 1; }
+
+.pmb__tool {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  background: rgba(12, 16, 22, 0.72);
+  color: #fff;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pmb__tool:disabled { opacity: 0.35; cursor: default; }
+.pmb__tool:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pmb__tool--drop:hover { background: var(--danger); }
+
+.pmb__add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 92px;
+  height: 92px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 150ms var(--ease, ease-out), border-color 150ms var(--ease, ease-out);
+}
+
+.pmb__add:hover { background: var(--bg-hover); border-color: var(--accent-border); }
+.pmb__add:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pmb__add--video { width: 132px; }
+
+.pmb__add-sign { font-size: 20px; line-height: 1; }
+.pmb__add-text { font-size: 12px; font-weight: 600; }
+.pmb__add-hint { font-size: 10px; color: var(--fg-subtle); }
+
+/* ── Состав комплекта ────────────────────────────────────────────────── */
+
+.pbc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+}
+
+.pbc__head {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.pbc__search { flex: 1 1 auto; min-width: 0; position: relative; }
+
+.pbc__empty {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--fg-subtle);
+}
+
+.pbc__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pbc__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 68px 34px 92px 92px 24px;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 12.5px;
+}
+
+.pbc__row:last-child { border-bottom: none; }
+.pbc__row--broken { color: var(--danger-text); }
+
+.pbc__flag {
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--danger-soft);
+  color: var(--danger-text);
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.pbc__qty { height: 26px; }
+
+.pbc__drop {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pbc__drop:hover { border-color: var(--danger-border); color: var(--danger-text); }
+.pbc__drop:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.pbc__totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--fg-subtle);
+}
+
+.pbc__totals b {
+  margin-left: 4px;
+  color: var(--fg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

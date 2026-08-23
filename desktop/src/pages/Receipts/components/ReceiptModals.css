@@ -1,0 +1,349 @@
+/* ══════════════════════════════════════════════════════════════════
+   Окна чека и возврата.
+
+   Вырезано из ReceiptsPage.css, когда старый журнал панели был удалён и
+   переписан заново (см. pages/panel/PanelJournal.tsx). Сами окна остались:
+   они общие с кассой и умеют печатать дубликат и оформлять возврат.
+   Остальные 105 правил того файла обслуживали таблицу и фильтры
+   старого журнала и удалены вместе с ними.
+
+   Импортируются самими окнами, а не страницей: страницы, которая их
+   подключала, больше нет.
+   ══════════════════════════════════════════════════════════════════ */
+
+.receipt-modal {
+     background: #fff;
+     border: 1px solid rgba(0,0,0,0.08);
+     border-radius: 12px;
+     width: 100%; max-width: 540px;
+     max-height: 90dvh;
+     display: flex; flex-direction: column;
+     overflow: hidden;
+   }
+
+.receipt-modal__header {
+     display: flex; align-items: center; justify-content: space-between;
+     padding: 14px 18px;
+     border-bottom: 1px solid rgba(0,0,0,0.06);
+     background: #f7f5f0;
+     flex-shrink: 0;
+   }
+
+.receipt-modal__title {
+     font-size: 16px; font-weight: 700;
+     color: #1a1710;
+     display: flex; align-items: center; gap: 8px;
+   }
+
+.receipt-modal__title::before {
+     content: '';
+     width: 6px; height: 6px; border-radius: 50%;
+     background: var(--accent);
+   }
+
+.receipt-modal__close {
+     display: flex; align-items: center; justify-content: center;
+     width: 30px; height: 30px; border-radius: 6px;
+     border: 1px solid rgba(0,0,0,0.06);
+     background: #fff; cursor: pointer;
+     color: #b0a898; font-size: 18px;
+   }
+
+.receipt-modal__close:hover {
+     color: #f04438;
+     background: rgba(240,68,56,0.08);
+   }
+
+.receipt-modal__body {
+     overflow-y: auto; flex: 1;
+   }
+
+.receipt-info-row {
+     display: flex; flex-direction: column; gap: 2px;
+     padding: 11px 18px;
+     border-right: 1px solid rgba(0,0,0,0.06);
+     border-bottom: 1px solid rgba(0,0,0,0.06);
+   }
+
+.receipt-info-row:nth-child(even) { border-right: none; }
+
+.receipt-info-row__label {
+     font-size: 10px; font-weight: 600;
+     letter-spacing: 0.05em; text-transform: uppercase; color: #b0a898;
+   }
+
+.receipt-info-row__value {
+     font-size: 14px; font-weight: 600; color: #1a1710;
+   }
+
+.receipt-modal__items-title {
+     font-size: 10px; font-weight: 600;
+     letter-spacing: 0.05em; text-transform: uppercase; color: #b0a898;
+     padding: 12px 18px 8px;
+     border-bottom: 1px solid rgba(0,0,0,0.06);
+     display: flex; align-items: center; gap: 6px;
+   }
+
+.receipt-modal__items-title::before {
+     content: ''; width: 5px; height: 5px; border-radius: 50%;
+     background: var(--accent);
+   }
+
+.receipt-items-table {
+     width: 100%; border-collapse: collapse;
+   }
+
+.receipt-items-table thead th {
+     padding: 8px 18px;
+     font-size: 10px; font-weight: 600;
+     letter-spacing: 0.03em; text-transform: uppercase;
+     color: #b0a898; text-align: left;
+     background: #f7f5f0;
+     border-bottom: 1px solid rgba(0,0,0,0.06);
+   }
+
+.receipt-items-table thead th:last-child { text-align: right; }
+
+.receipt-items-table tbody tr {
+     border-bottom: 1px solid rgba(0,0,0,0.04);
+   }
+
+.receipt-items-table tbody tr:last-child { border-bottom: none; }
+
+.receipt-items-table tbody tr.is-refunded { opacity: 0.4; }
+
+.receipt-items-table tbody tr.is-refunded td:first-child {
+     text-decoration: line-through;
+   }
+
+.receipt-items-table tbody td {
+     padding: 9px 18px;
+     font-size: 13px; color: #1a1710;
+   }
+
+.receipt-items-table__total { text-align: right; font-weight: 700; }
+
+.receipt-total-row {
+     display: flex; align-items: center; justify-content: space-between;
+     padding: 9px 18px;
+     border-bottom: 1px solid rgba(0,0,0,0.04);
+     font-size: 13px; color: #6b6455;
+   }
+
+.receipt-total-row:last-child { border-bottom: none; }
+
+.receipt-total-row--major {
+     background: color-mix(in srgb, var(--accent) 8%, transparent);
+     border-color: color-mix(in srgb, var(--accent) 15%, transparent);
+     font-size: 15px; font-weight: 800;
+     color: var(--accent-active);
+   }
+
+.receipt-total-row__discount { color: #f04438; font-weight: 600; }
+
+.receipt-modal__btn {
+     display: inline-flex; align-items: center; gap: 6px;
+     padding: 8px 16px; border-radius: 6px;
+     font-size: 13px; font-weight: 600; font-family: inherit;
+     cursor: pointer;
+   }
+
+.receipt-modal__btn:active { opacity: 0.8; }
+
+.receipt-modal__btn--secondary {
+     border: 1px solid rgba(0,0,0,0.1);
+     background: #fff; color: #6b6455;
+   }
+
+.receipt-modal__btn--secondary:hover { color: #1a1710; background: #f5f3ef; }
+
+.receipt-modal__btn--primary {
+     border: 1px solid var(--accent-active);
+     background: var(--accent); color: var(--accent-fg);
+   }
+
+.receipt-modal__btn--primary:hover { background: var(--accent-active); }
+
+.receipt-modal__btn--danger {
+     border: 1px solid rgba(240,68,56,0.3);
+     background: rgba(240,68,56,0.08); color: #f04438;
+   }
+
+.receipt-modal__btn--danger:hover { background: #f04438; color: #fff; }
+
+.refund-modal {
+     background: #fff;
+     border: 1px solid rgba(0,0,0,0.08);
+     border-radius: 12px;
+     width: 100%; max-width: 480px;
+     max-height: 88dvh;
+     display: flex; flex-direction: column;
+     overflow: hidden;
+   }
+
+.refund-modal__header {
+     display: flex; align-items: center; justify-content: space-between;
+     padding: 14px 18px;
+     border-bottom: 1px solid rgba(0,0,0,0.06);
+     background: rgba(240,68,56,0.08);
+     flex-shrink: 0;
+   }
+
+.refund-modal__title {
+     font-size: 15px; font-weight: 700;
+     color: #1a1710;
+     display: flex; align-items: center; gap: 8px;
+   }
+
+.refund-modal__title::before {
+     content: ''; width: 6px; height: 6px; border-radius: 50%;
+     background: #f04438;
+   }
+
+.refund-modal__close {
+     display: flex; align-items: center; justify-content: center;
+     width: 30px; height: 30px; border-radius: 6px;
+     border: 1px solid rgba(240,68,56,0.15);
+     background: transparent; cursor: pointer;
+     color: #f04438; font-size: 18px;
+   }
+
+.refund-modal__close:hover { background: rgba(240,68,56,0.1); }
+
+.refund-modal__body {
+     overflow-y: auto; flex: 1; padding: 16px 18px;
+   }
+
+.refund-modal__hint {
+     font-size: 13px; font-weight: 500; color: #6b6455; margin-bottom: 10px;
+   }
+
+.refund-items-list {
+     display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px;
+   }
+
+.refund-item {
+     display: flex; align-items: center; gap: 10px;
+     padding: 9px 12px;
+     background: #f5f3ef;
+     border: 1px solid rgba(0,0,0,0.06);
+     border-radius: 6px;
+     cursor: pointer;
+   }
+
+.refund-item:hover { background: #fff; border-color: rgba(0,0,0,0.1); }
+
+.refund-item:has(input:checked) {
+     background: rgba(240,68,56,0.06);
+     border-color: rgba(240,68,56,0.2);
+   }
+
+.refund-item--disabled {
+     opacity: 0.5;
+     cursor: not-allowed;
+   }
+
+.refund-item input[type="checkbox"] {
+     width: 16px; height: 16px; border-radius: 3px;
+     accent-color: #f04438; flex-shrink: 0; cursor: pointer;
+   }
+
+.refund-item__info {
+     display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;
+   }
+
+.refund-item__name {
+     font-size: 13px; font-weight: 600; color: #1a1710;
+     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+   }
+
+.refund-item__qty { font-size: 11px; color: #b0a898; font-weight: 500; }
+
+.refund-item__qty-input {
+     width: 76px;
+     height: 34px;
+     border-radius: 7px;
+     border: 1px solid rgba(240,68,56,0.28);
+     background: #fff;
+     color: #1a1710;
+     font-size: 14px;
+     font-weight: 750;
+     text-align: center;
+     outline: none;
+   }
+
+.refund-item__qty-input:focus {
+     border-color: #f04438;
+     box-shadow: 0 0 0 3px rgba(240,68,56,0.1);
+   }
+
+.refund-item__total {
+     font-size: 14px; font-weight: 700;
+     color: #1a1710; white-space: nowrap;
+   }
+
+.refund-reason { display: flex; flex-direction: column; gap: 5px; }
+
+.refund-reason__label {
+     font-size: 11px; font-weight: 600; color: #6b6455;
+   }
+
+.refund-reason__input {
+     padding: 8px 10px;
+     background: #f5f3ef;
+     border: 1px solid rgba(0,0,0,0.08);
+     border-radius: 6px;
+     color: #1a1710; font-size: 13px; font-family: inherit;
+     outline: none; resize: vertical; min-height: 70px;
+   }
+
+.refund-reason__input:focus {
+     border-color: #f04438;
+   }
+
+.refund-reason__input::placeholder { color: #b0a898; }
+
+.refund-summary {
+     margin-top: 10px; padding: 10px 12px;
+     background: rgba(240,68,56,0.06);
+     border: 1px solid rgba(240,68,56,0.15);
+     border-radius: 6px;
+     display: flex; align-items: center; justify-content: space-between;
+   }
+
+.refund-summary__label { font-size: 11px; font-weight: 600; color: #f04438; }
+
+.refund-summary__value { font-size: 16px; font-weight: 800; color: #f04438; }
+
+.refund-modal__footer {
+     display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+     padding: 12px 18px;
+     border-top: 1px solid rgba(0,0,0,0.06);
+     background: #f7f5f0;
+     flex-shrink: 0;
+   }
+
+.refund-modal__btn {
+     display: inline-flex; align-items: center; gap: 6px;
+     padding: 8px 16px; border-radius: 6px;
+     font-size: 13px; font-weight: 600; font-family: inherit;
+     cursor: pointer;
+   }
+
+.refund-modal__btn:active { opacity: 0.8; }
+
+.refund-modal__btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.refund-modal__btn--cancel {
+     border: 1px solid rgba(0,0,0,0.1);
+     background: #fff; color: #6b6455;
+   }
+
+.refund-modal__btn--cancel:hover { color: #1a1710; background: #f5f3ef; }
+
+.refund-modal__btn--confirm {
+     border: 1px solid rgba(240,68,56,0.35);
+     background: #f04438; color: #fff;
+   }
+
+.refund-modal__btn--confirm:hover:not(:disabled) { background: #d63030; }

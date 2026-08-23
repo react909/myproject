@@ -1,0 +1,50 @@
+.pp-kind {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pp-kind__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius, 12px);
+  border: 1.5px solid var(--border, rgba(0, 0, 0, 0.08));
+  background: var(--surface, #fff);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color var(--t2, 180ms) var(--ease),
+    background var(--t2, 180ms) var(--ease),
+    box-shadow var(--t2, 180ms) var(--ease);
+}
+
+.pp-kind__btn:hover {
+  border-color: var(--gold-border, rgba(200, 160, 80, 0.35));
+  background: var(--surface-2, #fdfbf7);
+}
+
+.pp-kind__btn--on {
+  border-color: var(--gold, var(--accent));
+  background: var(--gold-soft, color-mix(in srgb, var(--accent) 12%, transparent));
+  box-shadow: 0 0 0 1px var(--gold-glow, color-mix(in srgb, var(--accent) 20%, transparent));
+}
+
+.pp-kind__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-1, #1a1710);
+}
+
+.pp-kind__hint {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3, #b0a898);
+}
+
+.pp-kind__btn--on .pp-kind__label {
+  color: var(--accent-text);
+}

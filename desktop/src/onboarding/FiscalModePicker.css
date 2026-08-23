@@ -1,0 +1,99 @@
+/* ==========================================================================
+   Карточки выбора режима работы. Это первое решение всего онбординга —
+   карточки крупнее обычных и читаются с расстояния.
+   ========================================================================== */
+
+@import '../auth/theme.css';
+
+.fmode {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--sp-4);
+}
+
+.fmode__card {
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+  padding: var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.fmode__card:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.fmode__card.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.fmode__card:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fmode__card:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.fmode__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.fmode__head strong {
+  font-size: var(--fs-14);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+
+.fmode__radio {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--r-full);
+}
+
+.fmode__radio i {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--r-full);
+  background: transparent;
+}
+
+.fmode__card.is-selected .fmode__radio {
+  border-color: var(--accent);
+}
+
+.fmode__card.is-selected .fmode__radio i {
+  background: var(--accent);
+}
+
+.fmode__summary {
+  margin: var(--sp-4) 0 0;
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  line-height: var(--lh-normal);
+}
+
+/* Строка «что понадобится» — та самая, ради которой карточку и читают. */
+.fmode__needs {
+  margin: auto 0 0;
+  padding-top: var(--sp-4);
+  color: var(--fg-subtle);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}

@@ -1,0 +1,18 @@
+# Source of truth is pyproject.toml — keep this in sync manually.
+aiosqlite>=0.21.0
+alembic>=1.13.0
+email-validator>=2.2.0
+fastapi>=0.115.0
+# argon2id — основная схема хэширования паролей и ключей.
+# bcrypt остаётся только для чтения хэшей, созданных прошлыми версиями:
+# при первом успешном входе они переписываются в argon2id.
+passlib[argon2,bcrypt]>=1.7.4
+argon2-cffi>=23.1.0
+bcrypt>=4.0.0,<5
+psycopg[binary]>=3.2.0
+pydantic-settings>=2.6.0
+pyjwt>=2.10.0
+pyinstaller>=6.11.0
+python-multipart>=0.0.20
+sqlalchemy>=2.0.36
+uvicorn[standard]>=0.34.0

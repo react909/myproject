@@ -1,0 +1,721 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Общие детали трёх новых разделов: смены, закупки, поставщиков.
+
+   Один файл на три раздела, а не три копии. Причина простая: у них одинаковые
+   таблицы, одинаковые полосы показателей и одинаковые кнопки, и три копии
+   разошлись бы на первой же правке — раздел «Закупка» выглядел бы чуть иначе,
+   чем «Поставщики», без единой причины.
+
+   ВИД. Торговый терминал. Прямоугольники со скруглением 4–5 px, плоские
+   заливки, границы в один пиксель, никаких теней и градиентов. Акцент — только
+   на активном и на фокусе клавиатуры. Плотно: строка таблицы 30 px, отступы 8
+   по вертикали и 12 по горизонтали.
+
+   Префикс `dsk` (desk — рабочее место). Проверен на уникальность: `pnl`, `pj`,
+   `pfr`, `psr`, `pp` уже заняты, а CSS здесь глобальный.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dsk {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  min-width: 0;
+  flex: 1;
+}
+
+/* ── Панель инструментов раздела ─────────────────────────────────────── */
+
+.dsk__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.dsk__spacer { flex: 1 1 auto; }
+
+/*
+  Кнопка.
+
+  Прямоугольная, скругление 4. Одна высота у всех — 30 px, чтобы ряд кнопок
+  был ровным независимо от длины надписи.
+*/
+.dsk__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease, ease-out),
+    border-color 150ms var(--ease, ease-out),
+    color 150ms var(--ease, ease-out);
+}
+
+.dsk__btn:hover:not(:disabled) { background: var(--bg-hover); }
+
+.dsk__btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.dsk__btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Главное действие раздела — единственная заливка акцентом среди кнопок. */
+.dsk__btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+.dsk__btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/* Опасное действие: отмена проведения, изъятие. Красный — значение, не стиль. */
+.dsk__btn--danger {
+  border-color: var(--danger-border);
+  color: var(--danger-text);
+}
+.dsk__btn--danger:hover:not(:disabled) { background: var(--danger-soft); }
+
+/* ── Поля ────────────────────────────────────────────────────────────── */
+
+.dsk__field {
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 13px;
+  min-width: 0;
+}
+
+.dsk__field:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+}
+
+.dsk__field--wide { flex: 1 1 200px; }
+.dsk__field--num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.dsk__label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--fg-subtle);
+}
+
+/* ── Полоса показателей ──────────────────────────────────────────────── */
+
+/*
+  Плотная полоса с разделителями. Ни карточек, ни рамок, ни цветных полосок
+  сверху — этот приём стоит в каждом втором сгенерированном интерфейсе, и
+  система должна выглядеть своей.
+
+  Цвет появляется только там, где несёт смысл: недостача красная, излишек
+  жёлтый, сумма возвратов красная, когда возвраты были. Ноль всегда
+  нейтральный: красный ноль сообщал бы о беде, которой не случилось.
+*/
+.dsk__stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.dsk__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 108px;
+  padding: 7px 12px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.dsk__stat:last-child { border-right: none; }
+
+.dsk__stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+  white-space: nowrap;
+}
+
+.dsk__stat-value {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dsk__stat-unit {
+  margin-left: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  color: var(--fg-subtle);
+}
+
+.dsk__stat-value--bad { color: var(--danger-text); }
+.dsk__stat-value--warn { color: var(--warning-text); }
+.dsk__stat-value--good { color: var(--success-text); }
+
+/* Скелетон той же высоты, что и цифра: появление данных не должно сдвигать
+   таблицу под полосой. */
+.dsk__skeleton {
+  display: block;
+  height: 16px;
+  width: 68px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--bg-inset), var(--bg-hover), var(--bg-inset));
+  background-size: 200% 100%;
+  animation: dsk-shimmer 1200ms linear infinite;
+}
+
+@keyframes dsk-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* ── Таблица ─────────────────────────────────────────────────────────── */
+
+.dsk__table {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.dsk__head,
+.dsk__row {
+  display: grid;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  min-width: 0;
+}
+
+.dsk__head {
+  height: 26px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-inset);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+/* Заголовок-кнопка сортировки. Выглядит как заголовок, ведёт себя как кнопка:
+   отдельная кнопка рядом с надписью отняла бы место у названия столбца. */
+.dsk__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dsk__sort:hover { color: var(--fg); }
+.dsk__sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dsk__sort--on { color: var(--accent-text); }
+
+.dsk__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.dsk__scroll::-webkit-scrollbar { width: 6px; }
+.dsk__scroll::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+/*
+  Строка. Тридцать пикселей — плотно, но палец на моноблоке попадает.
+
+  Полосатости нет: чередование фона на плотной таблице читается как рябь.
+  Строки разделяет линия в один пиксель.
+*/
+.dsk__row {
+  height: 30px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 12.5px;
+  color: var(--fg);
+  cursor: default;
+  /* Никакого `transition` на фон: при ходьбе стрелками по списку подсветка
+     тянулась бы за выбором и отставала от него. */
+}
+
+.dsk__row:last-child { border-bottom: none; }
+.dsk__row:hover { background: var(--bg-hover); }
+
+/*
+  ВЫБРАННАЯ строка — та, на которой стоит клавиатура.
+
+  Мягкая акцентная подложка плюс полоса слева. Одной подложки мало: на плотной
+  таблице она сливается с наведением мышью, и непонятно, где ты находишься.
+  Полоса — признак, которого у наведения нет.
+*/
+.dsk__row--on {
+  background: var(--accent-soft);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.dsk__row--on:hover { background: var(--accent-soft-strong); }
+
+/* Строка, требующая внимания: просроченная оплата, недостача. */
+.dsk__row--alert { box-shadow: inset 2px 0 0 var(--danger); }
+.dsk__row--on.dsk__row--alert { box-shadow: inset 2px 0 0 var(--accent); }
+
+.dsk__num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dsk__ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.dsk__muted { color: var(--fg-subtle); }
+.dsk__bad { color: var(--danger-text); }
+.dsk__warn { color: var(--warning-text); }
+.dsk__good { color: var(--success-text); }
+
+/*
+  Метка состояния.
+
+  Не «пилюля»: прямоугольник со скруглением 3, плоская заливка, без рамки.
+  Цвет несёт значение — проведён, черновик, отменён, — и берётся из семантики,
+  а не из акцента: чёрновик не должен менять цвет вместе с фирменным.
+*/
+.dsk__tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.dsk__tag--draft { background: var(--bg-inset); color: var(--fg-muted); }
+.dsk__tag--posted { background: var(--success-soft); color: var(--success-text); }
+.dsk__tag--canceled { background: var(--danger-soft); color: var(--danger-text); }
+.dsk__tag--credit { background: var(--warning-soft); color: var(--warning-text); }
+.dsk__tag--paid { background: var(--bg-inset); color: var(--fg-muted); }
+.dsk__tag--open { background: var(--success-soft); color: var(--success-text); }
+
+/* ── Пустое состояние ────────────────────────────────────────────────── */
+
+/*
+  Раздел без данных показывает понятное пустое состояние, а не пустоту.
+  Две строки: что здесь бывает и что сделать, чтобы появилось.
+*/
+.dsk__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  min-height: 160px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.dsk__empty strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.dsk__empty span {
+  font-size: 12px;
+  color: var(--fg-subtle);
+  max-width: 380px;
+}
+
+.dsk__error {
+  margin: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--danger-border);
+  border-radius: 4px;
+  background: var(--danger-soft);
+  color: var(--danger-text);
+  font-size: 12px;
+}
+
+/* ── Двухколоночная раскладка: список слева, карточка справа ─────────── */
+
+.dsk__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+
+.dsk__pane {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* ── Карточка ────────────────────────────────────────────────────────── */
+
+.dsk__card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+}
+
+.dsk__card-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.dsk__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dsk__pair {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 12.5px;
+}
+
+.dsk__pair:last-child { border-bottom: none; }
+.dsk__pair > span { color: var(--fg-subtle); }
+.dsk__pair > strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ── Окно ввода ──────────────────────────────────────────────────────── */
+
+/*
+  Затемнение и окно. Скругление 4, граница в пиксель, тень только под самим
+  окном — без неё оно сливается с затемнением, а это уже не оформление, а
+  читаемость.
+
+  z-index выше клавиатуры (15200): окно ввода суммы обязано быть НАД экранной
+  клавиатурой, которой в него и печатают.
+*/
+.dlg {
+  position: fixed;
+  inset: 0;
+  z-index: 15300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-overlay);
+  animation: dlg-in 140ms var(--ease, ease-out);
+}
+
+@keyframes dlg-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dlg__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(460px, 100%);
+  max-height: 100%;
+  padding: 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  box-shadow: 0 12px 32px rgba(8, 12, 20, 0.28);
+  animation: dlg-card-in 160ms var(--ease, cubic-bezier(0.2, 0.7, 0.3, 1));
+}
+
+@keyframes dlg-card-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.dlg__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dlg__title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.dlg__subtitle {
+  font-size: 12px;
+  color: var(--fg-subtle);
+}
+
+.dlg__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.dlg__foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dlg__hint {
+  font-size: 11px;
+  color: var(--fg-subtle);
+}
+
+/* Ряд полей в окне: подпись сверху, поле снизу. */
+.dlg__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.dlg__wide { grid-column: 1 / -1; }
+
+/*
+  Крупное поле суммы.
+
+  Двадцать два пикселя — не украшение: сумму вводят на сенсорном моноблоке,
+  часто не глядя на клавиатуру, и ошибку в разряде надо видеть сразу.
+*/
+.dlg__amount {
+  height: 42px;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+  Итог сверки. Три состояния и три цвета, и цвет здесь — значение:
+  недостача красным, излишек жёлтым, ровно — нейтральным.
+*/
+.dlg__verdict {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-inset);
+}
+
+.dlg__verdict-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.dlg__verdict-value {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+
+.dlg__verdict--short {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+}
+.dlg__verdict--short .dlg__verdict-value,
+.dlg__verdict--short .dlg__verdict-label { color: var(--danger-text); }
+
+.dlg__verdict--over {
+  border-color: var(--warning-border);
+  background: var(--warning-soft);
+}
+.dlg__verdict--over .dlg__verdict-value,
+.dlg__verdict--over .dlg__verdict-label { color: var(--warning-text); }
+
+/*
+  Пересчёт по номиналам.
+
+  Не обязателен: кассир может просто ввести итог. Но пересчитать пачку по
+  купюрам и записать количество — ровно то, что он делает руками, и складывать
+  за него должна система.
+*/
+.dlg__denoms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  gap: 4px;
+}
+
+.dlg__denom {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: var(--bg-subtle);
+}
+
+.dlg__denom-face {
+  flex: 0 0 auto;
+  width: 44px;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-muted);
+}
+
+.dlg__denom-count {
+  width: 100%;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-surface);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+}
+
+.dlg__denom-count:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+/* Текст подтверждения. Читается целиком, поэтому не сжимается до подписи. */
+.dcf__message {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--fg);
+}
+
+/*
+  Список того, что затронет действие: что продано после прихода.
+
+  Прокручивается: позиций может быть сорок, и окно не должно вырастать во весь
+  экран, оставив кнопки за нижним краем.
+*/
+.dcf__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-inset);
+  font-size: 12.5px;
+}
+
+.dcf__list-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 4px;
+}
+
+.dcf__list-row span:last-child {
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── Вкладки внутри карточки ─────────────────────────────────────────── */
+
+.dsk__tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dsk__tab {
+  padding: 6px 12px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--fg-subtle);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.dsk__tab:hover { color: var(--fg); }
+.dsk__tab:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.dsk__tab--on {
+  color: var(--accent-text);
+  border-bottom-color: var(--accent);
+}

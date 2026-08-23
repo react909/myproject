@@ -1,0 +1,385 @@
+/*
+  Отчёт по товарам — в том же строю, что журнал чеков.
+
+  Три страницы панели должны выглядеть одной системой: те же отступы, та же
+  высота контролов, та же сетка фильтров. Здесь было своё — шаг 16, контролы
+  высотой 38, скругления 10–12, свой заголовок поверх заголовка панели.
+  Приведено к значениям журнала: шаг 8, контролы 30, скругление 6–10.
+*/
+.prp {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+/*
+  Своего заголовка у страницы больше нет — он в оболочке панели. Классы
+  .prp__hero / .prp__title / .prp__sub удалены вместе с разметкой: правила без
+  разметки живут дольше, чем помнят, зачем они были.
+*/
+
+.prp__export,
+.prp__filters button,
+.prp__filters input,
+.prp__filters select {
+  font: inherit;
+  font-size: 13px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--fg);
+  min-width: 0;
+}
+
+.prp__filters input:focus,
+.prp__filters select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+/* Та же кнопка выгрузки, что в журнале: обводка акцентом, не заливка. */
+.prp__export {
+  padding: 0 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.prp__export:hover:not(:disabled) { border-color: var(--accent); }
+
+.prp__export:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/*
+  Сетка фильтров — как в журнале: колонки одинаковой ширины, автозаполнение.
+
+  Было `repeat(3, max-content) repeat(4, minmax(120px, 1fr))` — жёсткие семь
+  колонок, из-за которых на узком окне поля сжимались до нечитаемых, а на
+  широком расползались вразнобой.
+*/
+.prp__filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 4px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+}
+
+.prp__filters button {
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--bg-surface);
+}
+
+/* Переключатель вида товара — три кнопки в ряд, одной колонкой сетки. */
+.prp__kind {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+  grid-column: span 2;
+}
+
+.prp__kind button { flex: 1 1 0; }
+
+/*
+  Выгрузка — в конец ряда, отдельно от фильтров.
+
+  Стояла следующей ячейкой сразу за «Штучные» и той же шириной: рядом с тремя
+  кнопками выбора вида «Экспорт» читался четвёртым видом товара. Это не фильтр,
+  а действие, и стоять он должен там же, где в журнале чеков, — последним.
+
+  `-2 / -1` — последняя колонка последнего ряда. Между фильтрами и кнопкой при
+  этом может остаться пустое место, и это правильно: пустота и отделяет
+  действие от фильтров.
+*/
+.prp__export {
+  grid-column: -2 / -1;
+}
+
+.prp__filters button.is-on {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.prp__filters input,
+.prp__filters select {
+  padding: 9px 10px;
+  min-width: 0;
+}
+
+.prp__summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 13px;
+}
+
+.prp__state,
+.prp__error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.prp__state {
+  background: #f8fafc;
+  color: #475569;
+}
+
+.prp__error {
+  background: #fef3f2;
+  color: #b42318;
+}
+
+.prp__table-wrap {
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+}
+
+.prp__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  font-size: 13px;
+}
+
+.prp__table th,
+.prp__table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.prp__table th {
+  position: sticky;
+  top: 0;
+  background: #f8fafc;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.prp__table td:first-child {
+  font-weight: 800;
+  white-space: normal;
+  min-width: 220px;
+}
+
+.prp__row-click {
+  cursor: pointer;
+}
+
+.prp__row-click:hover {
+  background: #fff7e6;
+}
+
+.prp__product-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  font-weight: 900;
+  color: #1a1710;
+  cursor: pointer;
+  text-align: left;
+}
+
+.prp-modal {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 0;
+  background: transparent;
+}
+
+.prp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.prp-modal-backdrop > .prp-modal {
+  width: min(960px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.prp-modal__title {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.prp-modal__sub {
+  margin: 0 0 2px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.prp-modal__close {
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.prp-modal__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.prp-modal__filters button,
+.prp-modal__filters input {
+  font: inherit;
+  border-radius: 9px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 8px 10px;
+  background: #fff;
+}
+
+.prp-modal__filters button.is-on {
+  background: #fff7e6;
+  border-color: var(--accent);
+}
+
+.prp-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.prp-modal__table th,
+.prp-modal__table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: left;
+}
+
+.prp-modal__table th {
+  background: #f8fafc;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.prp-modal__card {
+  width: 100%;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.prp-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.prp-modal__head h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.prp-modal__head p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.prp-modal__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.prp-modal__actions button {
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.prp-modal__actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.prp-modal__loading {
+  min-height: 300px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  text-align: center;
+  color: #475569;
+}
+
+.prp-modal__spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 4px solid #e2e8f0;
+  border-top-color: var(--accent);
+  animation: prpSpin 0.7s linear infinite;
+}
+
+.prp-modal__table-wrap {
+  overflow: auto;
+}
+
+@keyframes prpSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+  .prp__filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}

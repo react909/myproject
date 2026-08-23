@@ -1,0 +1,155 @@
+/* ==========================================================================
+   Отчёт по платежам, подтверждённым вручную.
+   ========================================================================== */
+
+@import '../../auth/theme.css';
+
+.pay-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.pay-report__periods {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.pay-report__period {
+  height: var(--ctl-h);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+
+.pay-report__period.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--fg);
+}
+
+.pay-report__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--sp-4);
+}
+
+.pay-report__summary > div {
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+}
+
+.pay-report__summary span {
+  display: block;
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+}
+
+.pay-report__summary strong {
+  display: block;
+  margin-top: var(--sp-2);
+  font-size: var(--fs-19);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.pay-report__ok {
+  margin: 0;
+  padding: var(--sp-4);
+  border: var(--border-w) solid rgba(22, 163, 74, 0.3);
+  border-radius: var(--r-sm);
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+}
+
+.pay-report__error {
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+}
+
+.pay-report__muted {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+}
+
+/* Таблица шире экрана прокручивается сама, страница по горизонтали — нет. */
+.pay-report__table-wrap {
+  overflow-x: auto;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.pay-report__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-12);
+}
+
+.pay-report__table th,
+.pay-report__table td {
+  padding: var(--sp-3) var(--sp-4);
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: var(--border-w) solid var(--border-subtle);
+}
+
+.pay-report__table th {
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-size: var(--fs-10);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+}
+
+.pay-report__table td.is-num,
+.pay-report__table th.is-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.pay-report__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.pay-report__attempts {
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+}
+
+.pay-report__attempts summary {
+  padding: var(--sp-3) var(--sp-4);
+  color: var(--fg-muted);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+
+.pay-report__attempts ul {
+  margin: 0;
+  padding: 0 var(--sp-4) var(--sp-4);
+  list-style: none;
+}
+
+.pay-report__attempts li {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-top: var(--border-w) solid var(--border-subtle);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+}

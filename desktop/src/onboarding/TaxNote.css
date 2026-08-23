@@ -1,0 +1,16 @@
+@import '../auth/theme.css';
+
+.tax-note {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-size: var(--fs-11);
+  line-height: var(--lh-normal);
+}
+
+.tax-note strong {
+  color: var(--fg);
+}

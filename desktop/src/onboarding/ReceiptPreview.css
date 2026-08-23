@@ -1,0 +1,66 @@
+/* Предпросмотр чека. Лента всегда белая, шрифт моноширинный: только так по
+   превью видно реальную раскладку по символам. */
+
+.rp {
+  min-width: 0;
+}
+
+/* Ширина ленты приходит из настройки рулона — здесь она только подписана. */
+.rp__roll {
+  margin: 0 0 var(--sp-3);
+  color: var(--fg-muted);
+  font-size: var(--fs-10);
+  line-height: var(--lh-normal);
+}
+
+.rp__paper {
+  padding: 10px 12px 16px;
+  border: 1px solid var(--border, #e3e6ea);
+  border-radius: 6px;
+  background: #ffffff;
+  color: #000000;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(16, 21, 29, 0.06));
+  overflow-x: auto;
+}
+
+/* ch привязан к ширине символа моноширинного шрифта, поэтому лента получается
+   ровно нужной ширины и текст в ней не «плавает» при смене масштаба. */
+.rp__ruler,
+.rp__text {
+  font-family: 'Cascadia Mono', Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: pre;
+  margin: 0;
+}
+
+.rp__paper[data-columns='32'] .rp__ruler,
+.rp__paper[data-columns='32'] .rp__text {
+  width: 32ch;
+}
+
+.rp__paper[data-columns='48'] .rp__ruler,
+.rp__paper[data-columns='48'] .rp__text {
+  width: 48ch;
+  font-size: 10px;
+}
+
+.rp__ruler {
+  color: #c3c8d0;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.rp__text {
+  color: #000000;
+}
+
+/* Зубцы отреза — сразу читается, что это чек, а не блок кода. */
+.rp__paper::after {
+  content: '';
+  display: block;
+  height: 6px;
+  margin: 10px -12px -16px;
+  background: repeating-linear-gradient(-45deg, #ffffff 0 5px, #e3e6ea 5px 6px);
+}
